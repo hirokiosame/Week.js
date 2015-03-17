@@ -5,7 +5,7 @@
   "authors": [
     "Hiroki Osame <hirokio@bu.edu>"
   ],
-  "main": "dist/Week.js",
+  "main": "src/javascript/Week.js",
   "license": "MIT",
   "ignore": [
     "**/.*",
