@@ -1,0 +1,17 @@
+{
+  "name": "Week.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/hirokiosame/Week.js",
+  "authors": [
+    "Hiroki Osame <hirokio@bu.edu>"
+  ],
+  "main": "dist/Week.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
