@@ -1,6 +1,7 @@
-module.exports = (function(){
-
-	var Week = require("./Week");
+/*global Week:false */
+(function(){
+	
+	'use strict';
 
 	var week1 = new Week();
 	week1.appendTo(document.getElementById("demo1"));

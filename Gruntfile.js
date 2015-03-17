@@ -12,8 +12,7 @@ module.exports = function(grunt) {
 			},
 			code: {
 				files: {
-					'dist/WeekCalendar.css' : 'src/scss/style.scss',
-					// 'dist/example/demo.css' : 'src/css/demo.scss'
+					'dist/style.css' : 'src/scss/style.scss',
 				}	
 			}
 		},
@@ -29,10 +28,6 @@ module.exports = function(grunt) {
 					"dist/index.html": "src/jade/index.jade"
 				}
 			}
-		},
-
-		browserify: {
-			'dist/WeekCalendar.js' : ['src/javascript/WeekCalendar.js']
 		},
 
 		jshint: {
@@ -79,10 +74,22 @@ module.exports = function(grunt) {
 			}
 		},
 
+		browserify: {
+			dist: {
+				files: {
+					'dist/Week.js' : ['src/javascript/Week.js']
+				},
+				options: {
+					browserifyOptions: {
+						'standalone': 'Week'
+					}
+				}
+			}
+		},
+
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-				// enclose: { 'window.jQuery': '$' }
+				// banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
 			},
 
 			bundle: {
@@ -91,16 +98,26 @@ module.exports = function(grunt) {
 					// beautify: true,
 					compress: true
 				},
-				src: 'dist/VisualQuery.js',
-				dest: 'dist/VisualQuery.min.uglified.js'
+				src: 'dist/Week.js',
+				dest: 'dist/Week.min.uglified.js'
+			},
+
+			script: {
+				options: {
+					mangle: true,
+					beautify: true,
+					compress: true
+				},
+				src: 'src/javascript/script.js',
+				dest: 'dist/script.js'
 			}
 		},
 
 		'closure-compiler': {
 			frontend: {
 				closurePath: '/usr/local/Cellar/closure-compiler/20141023/libexec',
-				js: 'dist/VisualQuery.js',
-				jsOutputFile: 'dist/VisualQuery.min.closure.js',
+				js: 'dist/Week.js',
+				jsOutputFile: 'dist/Week.min.closure.js',
 				//maxBuffer: 500,
 				options: {
 				//	compilation_level: 'ADVANCED_OPTIMIZATIONS',
@@ -132,7 +149,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-contrib-jade');
 
-	grunt.registerTask('default', ['sass', 'jshint', 'browserify', 'uglify', 'closure-compiler']);
-	grunt.registerTask('development', ['jade', 'sass', 'browserify', 'watch']);//['jshint', 'browserify', 'watch']);
+	grunt.registerTask('default', ['jade', 'sass', 'jshint', 'browserify', 'uglify', 'closure-compiler', 'watch']);
+	grunt.registerTask('development', ['jade', 'sass', 'jshint', 'browserify', 'watch']);
 
 };

@@ -1,4 +1,7 @@
+/*jshint unused: false */
 module.exports = (function(){
+
+	'use strict';
 
 	var E = require("./Element");
 
@@ -11,7 +14,6 @@ module.exports = (function(){
 
 		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+time%60).slice(-2) + APM;
 	}
-
 
 	function Week(){
 

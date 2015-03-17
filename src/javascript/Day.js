@@ -1,14 +1,16 @@
 module.exports = (function(){
 	
+	'use strict';
+	
 	var E = require("./Element");
 
-
+/*
 	function formatTime(time) {
 		var hr = ~~(time/60),
 			APM = hr >= 12 ? "PM" : "AM";
 
 		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+time%60).slice(-2) + APM;
-	}
+	}*/
 
 
 

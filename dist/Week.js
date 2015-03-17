@@ -1,15 +1,17 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Week = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = (function(){
+	
+	'use strict';
 	
 	var E = require("./Element");
 
-
+/*
 	function formatTime(time) {
 		var hr = ~~(time/60),
 			APM = hr >= 12 ? "PM" : "AM";
 
 		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+time%60).slice(-2) + APM;
-	}
+	}*/
 
 
 
@@ -242,7 +244,10 @@ module.exports = (function(){
 	return methods;
 })();
 },{}],3:[function(require,module,exports){
+/*jshint unused: false */
 module.exports = (function(){
+
+	'use strict';
 
 	var E = require("./Element");
 
@@ -255,7 +260,6 @@ module.exports = (function(){
 
 		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+time%60).slice(-2) + APM;
 	}
-
 
 	function Week(){
 
@@ -294,7 +298,6 @@ module.exports = (function(){
 
 			time.style.top = (((i) - this.start) / (this.end - this.start)*100) + "%";
 			this.$times.appendChild( time );
-			
 		}
 
 		this.$sidebar.appendChild(this.$times);
@@ -318,19 +321,5 @@ module.exports = (function(){
 
 	return Week;
 })();
-},{"./Day":1,"./Element":2}],4:[function(require,module,exports){
-module.exports = (function(){
-
-	var Week = require("./Week");
-
-	var week1 = new Week();
-	week1.appendTo(document.getElementById("demo1"));
-
-	var week2 = new Week();
-	week2.appendTo(document.getElementById("demo2"));
-
-	var week3 = new Week();
-	week3.appendTo(document.getElementById("demo3"));
-
-})();
-},{"./Week":3}]},{},[4]);
+},{"./Day":1,"./Element":2}]},{},[3])(3)
+});
