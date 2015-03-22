@@ -2,24 +2,29 @@
 
 #demo1{
 	float: left;
-	height: 50vh;
+	height: 40vh;
 	width: 50vw;
 	background-color: green;
+	overflow: scroll;
 }
 #demo2{
 	float: left;
-	height: 50vh;
+	height: 40vh;
 	width: 50vw;
 	background-color: blue;
+	overflow: scroll;
 }
 #demo3{
 	float: left;
-	height: 50vh;
+	height: 60vh;
 	width: 100vw;
 	background-color: yellow;
+	overflow: scroll;
 }
 
 
+
+$titleHeight: 10%;
 .columns{
 
 	display: flex;
@@ -31,13 +36,14 @@
 		flex-flow: column;
 
 		.title{
-			font-size: 12px;
+			font-size: 14px;
 			font-weight: 500;
 			padding-left: 5%;
 			box-sizing: border-box;
 			border-bottom: 1px solid #eee;
+			background-color: #F9F9F9;
 			color: #333;
-			height: 7%;
+			height: $titleHeight;
 			transform-style: preserve-3d;
 			div{
 				position: relative;
@@ -55,6 +61,45 @@
 	height: 100%;
 	background-color: #fff;
 	font-family: Helvetica Neue;
+	position: relative;
+
+	hr.tracker{
+		pointer-events: none;
+		position: absolute;
+		width: 100%;
+		z-index: 3;
+		margin: 0;
+		border: 0;
+		border-top: 1px solid rgba(60, 60, 60, 0.2);
+		/*box-shadow: 0 1px 3px rgba(0,0,0,0.1);*/
+	}
+	div.trackerLabel{
+		pointer-events: none;
+		position: absolute;
+		margin-left: 15px;
+		font-size: 14px;
+		z-index: 3;
+		margin-top: 5px;
+		color: rgba(60, 60, 60, 0.9);
+		letter-spacing: 1px;
+	}
+
+	.grid{
+		height: 100% - $titleHeight;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+
+		hr{
+			/*pointer-events: none;*/
+			margin: 0;
+			position: absolute;
+			width: 100%;
+			border: 0px;
+			height: 1px;
+			background-color: #eee;
+		}	
+	}
 
 	.sideBar{
 		flex-basis: 20%;
@@ -79,23 +124,39 @@
 
 	.day{
 		border-left: 1px solid #eee;
-
 		.events{
-			margin: 0 1%;
+
 			overflow: auto;
 			position: relative;
 			box-sizing: border-box;
+			/*border: 4px solid white;*/
+
+			border-right: 5px solid white;
+			border-left: 5px solid white;
 
 			.event{
+				cursor: pointer;
 				border: 1px solid #fff;
 				position: absolute;
 				box-sizing: border-box;
 				width: 100%;
-				font-size: 10px;
+				font-size: 12px;
+				line-height: 150%;
 				border-radius: 5px;
 				background-color: rgb(65, 178, 122);
 				color: #fff;
-				padding: 2% 5%;
+				padding: 2% 4%;
+
+				.time{
+					float: left;
+					font-size: 13px;
+					font-weight: 200;
+				}
+				.name{
+					float: right;
+					font-weight: 200;
+					font-size: 12px;
+				}
 			}
 		}
 	}

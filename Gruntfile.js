@@ -150,6 +150,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jade');
 
 	grunt.registerTask('default', ['jade', 'sass', 'jshint', 'browserify', 'uglify', 'closure-compiler', 'watch']);
-	grunt.registerTask('development', ['jade', 'sass', 'jshint', 'browserify', 'watch']);
+	grunt.registerTask('development', ['jade', 'sass', 'jshint', 'uglify:script', 'browserify', 'watch']);
 
 };

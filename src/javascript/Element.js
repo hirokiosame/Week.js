@@ -26,9 +26,11 @@ module.exports = (function(){
 		lement: function(tag, options){
 			var el = document.createElement(tag);
 
-			options.class && this.addClass(el, options.class);
-			options.text && (el.innerText = options.text);
-			options.html && (el.innerHTML = options.html);
+			if( typeof options === "object" ){
+				options.class && this.addClass(el, options.class);
+				options.text && (el.innerText = options.text);
+				options.html && (el.innerHTML = options.html);
+			}
 
 			return el;
 		},

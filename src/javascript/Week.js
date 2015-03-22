@@ -12,7 +12,7 @@ module.exports = (function(){
 		var hr = ~~(time/60),
 			APM = hr >= 12 ? "PM" : "AM";
 
-		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+time%60).slice(-2) + APM;
+		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+(~~time)%60).slice(-2) + APM;
 	}
 
 	function Week(){
@@ -23,9 +23,9 @@ module.exports = (function(){
 
 		this.$ = E.lement("div", { class: "week columns" });
 
-		this.createTimes();
-		this.$.appendChild(this.$sidebar);
-		// this.$.appendChild(this.$days);
+		this.createGrid();
+
+		this.createTracker();
 
 		this.days = [];
 
@@ -33,7 +33,75 @@ module.exports = (function(){
 		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"].forEach(function(name){
 			self.addDay(name + "day");
 		});
+
+
+		window.addEventListener("resize", function(e){
+			
+			self.days.forEach(function(day){
+				day.resizeText();
+			});
+		});
 	}
+
+	Week.prototype.createTracker = function(){
+
+		this.tracker = E.lement("hr", { class: "tracker" });
+		this.tracker.style.display = "none";
+
+		this.trackerLabel = E.lement("div", { class: "trackerLabel" });
+		this.trackerLabel.style.display = "none";
+
+		this.$.appendChild(this.tracker);
+		this.$.appendChild(this.trackerLabel);
+
+		var self = this;
+		function trackMouse(e){
+			// console.dir(self.grids);
+
+
+			if( self.grids.offsetTop > (e.pageY - self.$.offsetTop) ){ return; }
+
+
+			self.trackerLabel.style.top = (e.pageY - self.$.offsetTop) + "px";
+			self.trackerLabel.style.left = (e.pageX - self.$.offsetLeft) + "px";
+
+
+			var percent = (e.pageY - self.$.offsetTop - self.grids.offsetTop) / self.grids.offsetHeight;
+			self.trackerLabel.textContent = formatTime( ((self.end - self.start) * percent ) + self.start );
+
+
+			self.tracker.style.top = (e.pageY - self.$.offsetTop) + "px";
+		}
+
+		this.$.addEventListener("mouseenter", function(e){
+
+			self.tracker.style.display = "block";
+			self.trackerLabel.style.display = "block";
+
+			self.$.addEventListener("mousemove", trackMouse, false);
+			self.$.addEventListener("mouseleave", function leaveMouse(){
+				self.$.removeEventListener("mouseleave", leaveMouse);
+				self.$.removeEventListener("mousemove", trackMouse);
+				self.tracker.style.display = "none";
+				self.trackerLabel.style.display = "none";
+			}, false);
+		}, false);
+	};
+
+	Week.prototype.createGrid = function(){
+
+		this.grids = E.lement("div", { class: "grid" });
+		this.$.appendChild(this.grids);
+
+		for( var i = this.start + 60; i < this.end; i+=60 ){
+			var hr = document.createElement("hr");
+
+			hr.style.top = (((i) - this.start) / (this.end - this.start)*100) + "%";
+
+			this.grids.appendChild( hr );
+		}
+	};
+
 
 	Week.prototype.createTimes = function(){
 
@@ -72,6 +140,19 @@ module.exports = (function(){
 		dom.appendChild(this.$);
 	};
 
+	Week.prototype.addEvent = function(evnt){
+
+		if( !evnt.day ){ return; }
+
+		if( evnt.day instanceof Array ){
+			var self = this;
+			evnt.day.forEach(function(day){
+				self.days[day].addEvent(evnt);
+			});
+		}else{
+			this.days[evnt.day].addEvent(evnt);			
+		}
+	};
 
 	return Week;
 })();
