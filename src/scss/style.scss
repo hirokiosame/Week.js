@@ -1,6 +1,6 @@
 @import "compass/reset";
 
-#demo1{
+/*#demo1{
 	float: left;
 	height: 40vh;
 	width: 50vw;
@@ -13,7 +13,12 @@
 	width: 50vw;
 	background-color: blue;
 	overflow: scroll;
+}*/
+
+html,body{
+	height: 100%;
 }
+
 #demo3{
 	float: left;
 	height: 60vh;
@@ -28,12 +33,12 @@ $titleHeight: 10%;
 .columns{
 
 	display: flex;
-	
+	flex-flow: row;
 	.column{
 		flex-basis: 50%;
 		
 		display: flex;
-		flex-flow: column;
+		flex-flow: column nowrap;
 
 		.title{
 			font-size: 14px;
@@ -43,16 +48,16 @@ $titleHeight: 10%;
 			border-bottom: 1px solid #eee;
 			background-color: #F9F9F9;
 			color: #333;
-			height: $titleHeight;
 			transform-style: preserve-3d;
 			div{
-				position: relative;
+				position: absolute;
 				top: 50%;
 				transform: translateY(-50%);
 			}
+			flex: 1 0 50%;
 		}
 		.title + div{
-			flex: 2;
+			flex: 9 0 50%;
 		}
 	}
 }
@@ -71,7 +76,6 @@ $titleHeight: 10%;
 		margin: 0;
 		border: 0;
 		border-top: 1px solid rgba(60, 60, 60, 0.2);
-		/*box-shadow: 0 1px 3px rgba(0,0,0,0.1);*/
 	}
 	div.trackerLabel{
 		pointer-events: none;
@@ -91,7 +95,6 @@ $titleHeight: 10%;
 		width: 100%;
 
 		hr{
-			/*pointer-events: none;*/
 			margin: 0;
 			position: absolute;
 			width: 100%;

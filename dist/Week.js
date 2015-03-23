@@ -108,10 +108,12 @@ module.exports = (function(){
 		this.$.appendChild(this.$title);
 		this.$.appendChild(this.$events);
 
-		var self = this;
-		this.$.addEventListener("click", function(){
-			console.log(self.events);
-		});
+		// var self = this;
+		// this.$.addEventListener("click", function(){
+
+
+		// 	console.log(self.events);
+		// });
 
 	}
 
