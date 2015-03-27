@@ -124,7 +124,7 @@ module.exports = (function(){
 	};
 
 	Week.prototype.remove = function(){
-		this.$.parentNode.removeChild(this.$);
+		this.$._.parentNode.removeChild(this.$._);
 
 		return this;
 	};
