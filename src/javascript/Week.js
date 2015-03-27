@@ -15,35 +15,8 @@ module.exports = (function(){
 		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+(~~time)%60).slice(-2) + APM;
 	}
 
-	function Week(){
 
-		this.start = 9*60;
-		this.end = (12+10)*60;
-
-
-		this.$ = E.lement("div", { class: "week columns" });
-
-		this.createGrid();
-
-		this.createTracker();
-
-		this.days = [];
-
-		var self = this;
-		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"].forEach(function(name){
-			self.addDay(name + "day");
-		});
-
-
-		window.addEventListener("resize", function(e){
-			
-			self.days.forEach(function(day){
-				day.resizeText();
-			});
-		});
-	}
-
-	Week.prototype.createTracker = function(){
+	function createTracker(){
 
 		this.tracker = E.lement("hr", { class: "tracker" });
 		this.tracker.style.display = "none";
@@ -57,7 +30,6 @@ module.exports = (function(){
 		var self = this;
 		function trackMouse(e){
 			// console.dir(self.grids);
-
 
 			if( self.grids.offsetTop > (e.pageY - self.$.offsetTop) ){ return; }
 
@@ -86,9 +58,9 @@ module.exports = (function(){
 				self.trackerLabel.style.display = "none";
 			}, false);
 		}, false);
-	};
+	}
 
-	Week.prototype.createGrid = function(){
+	function createGrid(){
 
 		this.grids = E.lement("div", { class: "grid" });
 		this.$.appendChild(this.grids);
@@ -100,10 +72,20 @@ module.exports = (function(){
 
 			this.grids.appendChild( hr );
 		}
-	};
+	}
 
+	function addDay(day){
 
-	Week.prototype.createTimes = function(){
+		var createDay = new Day(this, day);
+
+		// Add to array
+		this.days.push( createDay );
+
+		// Append to DOM
+		this.$.appendChild(createDay.$);
+	}
+/*
+	function createTimes(){
 
 		this.$sidebar = E.lement("div", { class: "column sidebar" });
 
@@ -123,25 +105,47 @@ module.exports = (function(){
 		}
 
 		this.$sidebar.appendChild(this.$times);
-	};
+	};*/
 
-	Week.prototype.addDay = function(day){
 
-		var createDay = new Day(this, day);
+	function Week(){
 
-		// Add to array
-		this.days.push( createDay );
+		this.start = 9*60;
+		this.end = (12+10)*60;
 
-		// Append to DOM
-		this.$.appendChild(createDay.$);
-	};
+
+		this.$ = E.lement("div", { class: "week columns" });
+
+		createGrid.apply(this);
+
+		createTracker.apply(this);
+
+		this.days = [];
+
+		var self = this;
+
+		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"].forEach(function(name){
+			addDay.apply(self, [name + "day"]);
+		});
+
+
+		window.addEventListener("resize", function(e){
+			self.days.forEach(function(day){
+				day.resizeText();
+			});
+		});
+	}
 
 	Week.prototype.appendTo = function(dom){
 		dom.appendChild(this.$);
+
+		return this;
 	};
 
 	Week.prototype.remove = function(){
 		this.$.parentNode.removeChild(this.$);
+
+		return this;
 	};
 
 	Week.prototype.addEvent = function(evnt){
@@ -149,13 +153,32 @@ module.exports = (function(){
 		if( !evnt.day ){ return; }
 
 		if( evnt.day instanceof Array ){
-			var self = this;
-			evnt.day.forEach(function(day){
-				self.days[day].addEvent(evnt);
-			});
+			
+			for( var i = 0; i<evnt.day.length; i++){
+
+				// Add event per day
+				this.days[ evnt.day[i] ].addEvent(evnt);
+			}
 		}else{
-			this.days[evnt.day].addEvent(evnt);			
+			this.days[evnt.day].addEvent(evnt);
 		}
+
+		return this;
+	};
+
+	Week.prototype.removeEvent = function(evnt){
+		if( evnt.day instanceof Array ){
+
+			for( var i = 0; i<evnt.day.length; i++){
+
+				// Add event per day
+				this.days[ evnt.day[i] ].removeEvent(evnt);
+			}
+		}else{
+			this.days[evnt.day].removeEvent(evnt);
+		}
+
+		return this;
 	};
 
 

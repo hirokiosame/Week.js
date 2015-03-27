@@ -56,7 +56,7 @@ module.exports = (function(){
 			evnt.localColumns++;
 
 			// Must reciprocate to the event that is being collided with...
-			columns.events[columns.events.length-1].localColumns++;
+			columns[i].events[columns[i].events.length-1].localColumns++;
 
 			// Check next column
 			i++;
@@ -131,6 +131,12 @@ module.exports = (function(){
 		this.render();
 	};
 
+	Day.prototype.removeEvent = function(evnt){
+
+		for( var i = 0; i < this.events.length; i++ ){
+			console.log( i, this.events[i] );
+		}
+	};
 
 	Day.prototype.renderEvent = function(evnt){
 
