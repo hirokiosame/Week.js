@@ -18,59 +18,61 @@ module.exports = (function(){
 
 	function createTracker(){
 
-		this.tracker = E.lement("hr", { class: "tracker" });
-		this.tracker.style.display = "none";
+		this.tracker = E("hr", { class: "tracker" });
+		this.tracker.hide();
 
-		this.trackerLabel = E.lement("div", { class: "trackerLabel" });
-		this.trackerLabel.style.display = "none";
+		this.trackerLabel = E("div", { class: "trackerLabel" });
+		this.trackerLabel.hide();
 
-		this.$.appendChild(this.tracker);
-		this.$.appendChild(this.trackerLabel);
+		this.$.append(this.tracker, this.trackerLabel);
 
 		var self = this;
 		function trackMouse(e){
 			// console.dir(self.grids);
 
-			if( self.grids.offsetTop > (e.pageY - self.$.offsetTop) ){ return; }
+			if( self.grids._.offsetTop > (e.pageY - self.$._.offsetTop) ){ return; }
 
+			// Set position
+			self.tracker._.style.top = self.trackerLabel._.style.top = (e.pageY - self.$._.offsetTop) + "px";
+			self.trackerLabel._.style.left = (e.pageX - self.$._.offsetLeft) + "px";
 
-			self.trackerLabel.style.top = (e.pageY - self.$.offsetTop) + "px";
-			self.trackerLabel.style.left = (e.pageX - self.$.offsetLeft) + "px";
+			// Calculate offeset in percent
+			var percent = (e.pageY - self.$._.offsetTop - self.grids._.offsetTop) / self.grids._.offsetHeight;
 
-
-			var percent = (e.pageY - self.$.offsetTop - self.grids.offsetTop) / self.grids.offsetHeight;
-			self.trackerLabel.textContent = formatTime( ((self.end - self.start) * percent ) + self.start );
-
-
-			self.tracker.style.top = (e.pageY - self.$.offsetTop) + "px";
+			// Render time
+			self.trackerLabel.text( formatTime( ((self.end - self.start) * percent ) + self.start ) );
 		}
 
-		this.$.addEventListener("mouseenter", function(e){
+		this.$.on("mouseenter", function(e){
 
-			self.tracker.style.display = "block";
-			self.trackerLabel.style.display = "block";
+			self.tracker.show();
+			self.trackerLabel.show();
 
-			self.$.addEventListener("mousemove", trackMouse, false);
-			self.$.addEventListener("mouseleave", function leaveMouse(){
-				self.$.removeEventListener("mouseleave", leaveMouse);
-				self.$.removeEventListener("mousemove", trackMouse);
-				self.tracker.style.display = "none";
-				self.trackerLabel.style.display = "none";
-			}, false);
-		}, false);
+			self.$
+				.on("mousemove", trackMouse)
+				.on("mouseleave", function leaveMouse(){
+
+					self.$
+						.off("mouseleave", leaveMouse)
+						.off("mousemove", trackMouse);
+
+					self.tracker.hide();
+					self.trackerLabel.hide();
+				});
+		});
 	}
 
 	function createGrid(){
 
-		this.grids = E.lement("div", { class: "grid" });
-		this.$.appendChild(this.grids);
+		this.grids = E("div", { class: "grid" });
+		this.$.append(this.grids);
 
 		for( var i = this.start + 60; i < this.end; i+=60 ){
 			var hr = document.createElement("hr");
 
 			hr.style.top = (((i) - this.start) / (this.end - this.start)*100) + "%";
 
-			this.grids.appendChild( hr );
+			this.grids.append( hr );
 		}
 	}
 
@@ -82,30 +84,9 @@ module.exports = (function(){
 		this.days.push( createDay );
 
 		// Append to DOM
-		this.$.appendChild(createDay.$);
+		this.$.append(createDay.$);
 	}
-/*
-	function createTimes(){
 
-		this.$sidebar = E.lement("div", { class: "column sidebar" });
-
-		this.$sidebar.appendChild( E.lement("div", { class: "title" }) );
-
-		this.$times = E.lement("div", { class: "times" });
-
-		for( var i = this.start; i <= this.end; i+=30 ){
-
-			var time = E.lement("div", {
-				text: formatTime(i),
-				class: "time" + ((i % 60) ? " half" : "")
-			});
-
-			time.style.top = (((i) - this.start) / (this.end - this.start)*100) + "%";
-			this.$times.appendChild( time );
-		}
-
-		this.$sidebar.appendChild(this.$times);
-	};*/
 
 
 	function Week(){
@@ -114,7 +95,7 @@ module.exports = (function(){
 		this.end = (12+10)*60;
 
 
-		this.$ = E.lement("div", { class: "week columns" });
+		this.$ = E("div", { class: "week columns" });
 
 		createGrid.apply(this);
 
@@ -137,7 +118,7 @@ module.exports = (function(){
 	}
 
 	Week.prototype.appendTo = function(dom){
-		dom.appendChild(this.$);
+		dom.appendChild(this.$._);
 
 		return this;
 	};

@@ -1,22 +1,3 @@
-/*		this.$title = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-		this.$title.classList.add("title");
-		this.$title.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-		this.$title.setAttributeNS(null, "width", "100%");
-		this.$title.setAttributeNS(null, "height", "10%");
-		this.$title.setAttributeNS(null, "viewBox", "0 0 60 30");
-
-
-		var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-		txt.textContent = name;
-		// txt.setAttributeNS(null, "x", "50%");
-		txt.setAttributeNS(null, "x", "0");
-		txt.setAttributeNS(null, "y", "50%");
-		// txt.setAttributeNS(null, "text-anchor", "end");
-		// txt.setAttributeNS(null, "alignment-baseline", "middle");
-
-		// this.$title.appendChild( txt );
-*/
-
 module.exports = (function(){
 	
 	'use strict';
@@ -36,9 +17,8 @@ module.exports = (function(){
 
 		var i = 0;
 
-		if( typeof evnt.localColumns !== "number" ){
-			evnt.localColumns = 1;
-		}
+		// Declare as at least 1 column
+		evnt.localColumns = 1;
 
 		// Find a column
 		while ( 1 ) {
@@ -51,6 +31,10 @@ module.exports = (function(){
 			if (columns[i].lastEventEnds <= evnt.start) {
 				return i;
 			}
+			// console.log("\tCollision", evnt.name, "with", columns[i].events[columns[i].events.length-1].name);
+			// console.log("\t\t", evnt.name, "new local:", evnt.localColumns+1);
+			// console.log("\t\t", columns[i].events[columns[i].events.length-1].localColumns);
+
 
 			// If it collides, increment number of neighbors
 			evnt.localColumns++;
@@ -76,15 +60,19 @@ module.exports = (function(){
 		var columns = {};
 
 		// Allocate each event
-		events.forEach(function(event1){
+		events.forEach(function(evnt){
+
+			console.log("Allocating", evnt.name);
 
 			// Find collumn
-			var idx = event1.inColumn = findColumn(event1, columns);
+			var idx = evnt.inColumn = findColumn(evnt, columns);
+
+			console.log("\tAllocated", evnt.inColumn, evnt.localColumns);
 
 			// Save position in column
-			columns[idx].lastEventEnds = event1.end;
+			columns[idx].lastEventEnds = evnt.end;
 
-			columns[idx].events.push(event1);
+			columns[idx].events.push(evnt);
 
 		});
 	}
@@ -99,13 +87,11 @@ module.exports = (function(){
 		this.events = [];
 
 
-		this.$title = E.lement("div", { class: "title", html: '<div>' + name + '</div>' });
+		this.$title = E("div", { class: "title", _text: "div", text: name });
+		this.$events = E("div", { class: "events" });
 
-		this.$events = E.lement("div", { class: "events" });
-
-		this.$ = E.lement("div", { class: "column day" });
-		this.$.appendChild(this.$title);
-		this.$.appendChild(this.$events);
+		this.$ = E("div", { class: "column day" });
+		this.$.append(this.$title, this.$events);
 
 		// var self = this;
 		// this.$.addEventListener("click", function(){
@@ -118,20 +104,21 @@ module.exports = (function(){
 
 	Day.prototype.addEvent = function(evnt){
 
+		console.log("\n\nEvent added", evnt.name);
+
 		var _evnt = Object.create(evnt);
-		_evnt.$ = E.lement("div", { class: "event" });
+		_evnt.$ = E("div", { class: "event" });
 
-		_evnt.$time = E.lement("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
-		_evnt.$name = E.lement("div", { class: "name", text: evnt.name });
+		var $time = E("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
+		var $name = E("div", { class: "name", text: evnt.name });
 
-		_evnt.$.appendChild( _evnt.$time );
-		_evnt.$.appendChild( _evnt.$name );
+		_evnt.$.append( $time, $name );
 
 		this.events.push(_evnt);
 		this.render();
 	};
 
-	Day.prototype.removeEvent = function(evnt){
+	Day.prototype.removeEvent = function(){
 
 		for( var i = 0; i < this.events.length; i++ ){
 			console.log( i, this.events[i] );
@@ -140,14 +127,19 @@ module.exports = (function(){
 
 	Day.prototype.renderEvent = function(evnt){
 
+		console.log("   Rendering event:", evnt.name);
+		console.log("   Local Columns:",evnt.localColumns);
+		console.log("   In Column:", evnt.inColumn);
+		console.log("\n");
+
 		var startPercent = (evnt.start - this.week.start) / (this.week.end - this.week.start) * 100,
 			height = (evnt.end - evnt.start ) / (this.week.end - this.week.start) * 100;
 
-		evnt.$.style.top = startPercent + "%";
-		evnt.$.style.height = height + "%";
+		evnt.$._.style.top = startPercent + "%";
+		evnt.$._.style.height = height + "%";
 
-		evnt.$.style.width = (1/(evnt.localColumns-1)*100) + "%";
-		evnt.$.style.left = (evnt.inColumn/evnt.localColumns*100) + "%";
+		evnt.$._.style.width = (1/(evnt.localColumns)*100) + "%";
+		evnt.$._.style.left = (evnt.inColumn/evnt.localColumns*100) + "%";
 
 	};
 
@@ -155,13 +147,15 @@ module.exports = (function(){
 
 		var self = this;
 
+		console.log("Render invoked");
+
 		allocate2Columns(this.events);
 
 		this.events.forEach(function(evnt){
 
 			self.renderEvent(evnt);
 
-			self.$events.appendChild( evnt.$ );
+			self.$events.append( evnt.$ );
 		});
 	};
 
@@ -173,13 +167,13 @@ module.exports = (function(){
 		// console.log(this.$title.offsetWidth);
 		// console.log();
 
-		this.$title.style.fontSize = (this.$title.offsetHeight/3) + "px";
+		this.$title._.style.fontSize = (this.$title._.offsetHeight/3) + "px";
 
 		this.events.forEach(function(evnt){
 			// evnt.$time.style.fontSize = (evnt.$.clientHeight/4.5) + "px";
 			// evnt.$name.style.fontSize = (evnt.$.clientHeight/5) + "px";
-			evnt.$time.style.fontSize = (evnt.$.clientWidth/17) + "px";
-			evnt.$name.style.fontSize = (evnt.$.clientWidth/19) + "px";
+			evnt.$time._.style.fontSize = (evnt.$._.clientWidth/17) + "px";
+			evnt.$name._.style.fontSize = (evnt.$._.clientWidth/19) + "px";
 		});
 	};
 

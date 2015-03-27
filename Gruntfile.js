@@ -137,6 +137,12 @@ module.exports = function(grunt) {
 			src: {
 				files: ['src/**/*'],
 				tasks: ['development'],
+				options: {
+					livereload: true
+				}
+			},
+			options: {
+				spawn: false
 			}
 		}
 	});

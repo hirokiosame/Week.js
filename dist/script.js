@@ -7,6 +7,26 @@
         start: 570,
         end: 660
     }), a.addEvent({
+        name: "CS 108 A1",
+        day: [ 2, 4 ],
+        start: 570,
+        end: 660
+    }), a.addEvent({
+        name: "CS 108 A1",
+        day: [ 2, 4 ],
+        start: 570,
+        end: 660
+    }), a.addEvent({
+        name: "CS 108 A1",
+        day: [ 2, 4 ],
+        start: 594,
+        end: 714
+    }), a.addEvent({
+        name: "CS 108 A1",
+        day: [ 2, 4 ],
+        start: 570,
+        end: 660
+    }), a.addEvent({
         name: "CS 101 A1",
         day: [ 2, 4 ],
         start: 750,

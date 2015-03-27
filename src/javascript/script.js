@@ -22,6 +22,34 @@
 	});
 
 	week3.addEvent({
+		name: "CS 108 A1",
+		day: [2, 4],
+		start: 9.5*60,
+		end: 11*60
+	});
+
+	week3.addEvent({
+		name: "CS 108 A1",
+		day: [2, 4],
+		start: 9.5*60,
+		end: 11*60
+	});
+
+	week3.addEvent({
+		name: "CS 108 A1",
+		day: [2, 4],
+		start: 9.9*60,
+		end: 11.9*60
+	});
+
+	week3.addEvent({
+		name: "CS 108 A1",
+		day: [2, 4],
+		start: 9.5*60,
+		end: 11*60
+	});
+
+	week3.addEvent({
 		name: "CS 101 A1",
 		day: [2, 4],
 		start: (12.5)*60,

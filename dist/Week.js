@@ -1,23 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Week = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*		this.$title = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-		this.$title.classList.add("title");
-		this.$title.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-		this.$title.setAttributeNS(null, "width", "100%");
-		this.$title.setAttributeNS(null, "height", "10%");
-		this.$title.setAttributeNS(null, "viewBox", "0 0 60 30");
-
-
-		var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-		txt.textContent = name;
-		// txt.setAttributeNS(null, "x", "50%");
-		txt.setAttributeNS(null, "x", "0");
-		txt.setAttributeNS(null, "y", "50%");
-		// txt.setAttributeNS(null, "text-anchor", "end");
-		// txt.setAttributeNS(null, "alignment-baseline", "middle");
-
-		// this.$title.appendChild( txt );
-*/
-
 module.exports = (function(){
 	
 	'use strict';
@@ -37,9 +18,9 @@ module.exports = (function(){
 
 		var i = 0;
 
-		if( typeof evnt.localColumns !== "number" ){
+		// if( typeof evnt.localColumns !== "number" ){
 			evnt.localColumns = 1;
-		}
+		// }
 
 		// Find a column
 		while ( 1 ) {
@@ -52,12 +33,16 @@ module.exports = (function(){
 			if (columns[i].lastEventEnds <= evnt.start) {
 				return i;
 			}
+			console.log("\tCollision", evnt.name, "with", columns[i].events[columns[i].events.length-1].name);
+			console.log("\t\t", evnt.name, "new local:", evnt.localColumns+1);
+			console.log("\t\t", columns[i].events[columns[i].events.length-1].localColumns);
+
 
 			// If it collides, increment number of neighbors
 			evnt.localColumns++;
 
 			// Must reciprocate to the event that is being collided with...
-			columns.events[columns.events.length-1].localColumns++;
+			columns[i].events[columns[i].events.length-1].localColumns++;
 
 			// Check next column
 			i++;
@@ -77,15 +62,19 @@ module.exports = (function(){
 		var columns = {};
 
 		// Allocate each event
-		events.forEach(function(event1){
+		events.forEach(function(evnt){
+
+			console.log("Allocating", evnt.name);
 
 			// Find collumn
-			var idx = event1.inColumn = findColumn(event1, columns);
+			var idx = evnt.inColumn = findColumn(evnt, columns);
+
+			console.log("\tAllocated", evnt.inColumn, evnt.localColumns);
 
 			// Save position in column
-			columns[idx].lastEventEnds = event1.end;
+			columns[idx].lastEventEnds = evnt.end;
 
-			columns[idx].events.push(event1);
+			columns[idx].events.push(evnt);
 
 		});
 	}
@@ -100,13 +89,11 @@ module.exports = (function(){
 		this.events = [];
 
 
-		this.$title = E.lement("div", { class: "title", html: '<div>' + name + '</div>' });
+		this.$title = E("div", { class: "title", _text: "div", text: name });
+		this.$events = E("div", { class: "events" });
 
-		this.$events = E.lement("div", { class: "events" });
-
-		this.$ = E.lement("div", { class: "column day" });
-		this.$.appendChild(this.$title);
-		this.$.appendChild(this.$events);
+		this.$ = E("div", { class: "column day" });
+		this.$.append(this.$title, this.$events);
 
 		// var self = this;
 		// this.$.addEventListener("click", function(){
@@ -119,30 +106,42 @@ module.exports = (function(){
 
 	Day.prototype.addEvent = function(evnt){
 
+		console.log("\n\nEvent added", evnt.name);
+
 		var _evnt = Object.create(evnt);
-		_evnt.$ = E.lement("div", { class: "event" });
+		_evnt.$ = E("div", { class: "event" });
 
-		_evnt.$time = E.lement("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
-		_evnt.$name = E.lement("div", { class: "name", text: evnt.name });
+		var $time = E("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
+		var $name = E("div", { class: "name", text: evnt.name });
 
-		_evnt.$.appendChild( _evnt.$time );
-		_evnt.$.appendChild( _evnt.$name );
+		_evnt.$.append( $time, $name );
 
 		this.events.push(_evnt);
 		this.render();
 	};
 
+	Day.prototype.removeEvent = function(){
+
+		for( var i = 0; i < this.events.length; i++ ){
+			console.log( i, this.events[i] );
+		}
+	};
 
 	Day.prototype.renderEvent = function(evnt){
+
+		console.log("   Rendering event:", evnt.name);
+		console.log("   Local Columns:",evnt.localColumns);
+		console.log("   In Column:", evnt.inColumn);
+		console.log("\n");
 
 		var startPercent = (evnt.start - this.week.start) / (this.week.end - this.week.start) * 100,
 			height = (evnt.end - evnt.start ) / (this.week.end - this.week.start) * 100;
 
-		evnt.$.style.top = startPercent + "%";
-		evnt.$.style.height = height + "%";
+		evnt.$._.style.top = startPercent + "%";
+		evnt.$._.style.height = height + "%";
 
-		evnt.$.style.width = (1/(evnt.localColumns-1)*100) + "%";
-		evnt.$.style.left = (evnt.inColumn/evnt.localColumns*100) + "%";
+		evnt.$._.style.width = (1/(evnt.localColumns)*100) + "%";
+		evnt.$._.style.left = (evnt.inColumn/evnt.localColumns*100) + "%";
 
 	};
 
@@ -150,13 +149,15 @@ module.exports = (function(){
 
 		var self = this;
 
+		console.log("Render invoked");
+
 		allocate2Columns(this.events);
 
 		this.events.forEach(function(evnt){
 
 			self.renderEvent(evnt);
 
-			self.$events.appendChild( evnt.$ );
+			self.$events.append( evnt.$ );
 		});
 	};
 
@@ -168,13 +169,13 @@ module.exports = (function(){
 		// console.log(this.$title.offsetWidth);
 		// console.log();
 
-		this.$title.style.fontSize = (this.$title.offsetHeight/3) + "px";
+		this.$title._.style.fontSize = (this.$title._.offsetHeight/3) + "px";
 
 		this.events.forEach(function(evnt){
 			// evnt.$time.style.fontSize = (evnt.$.clientHeight/4.5) + "px";
 			// evnt.$name.style.fontSize = (evnt.$.clientHeight/5) + "px";
-			evnt.$time.style.fontSize = (evnt.$.clientWidth/17) + "px";
-			evnt.$name.style.fontSize = (evnt.$.clientWidth/19) + "px";
+			evnt.$time._.style.fontSize = (evnt.$._.clientWidth/17) + "px";
+			evnt.$name._.style.fontSize = (evnt.$._.clientWidth/19) + "px";
 		});
 	};
 
@@ -184,71 +185,118 @@ module.exports = (function(){
 module.exports = (function(){
 	'use strict';
 
+	function E(){}
 
-	function makeFunction(func){
-		return function(){
-			var args = [].slice.apply(arguments);
+	E.prototype.addClass = function addClass(className){
+		var split = className.split(" ");
 
-			var el = this.el || args.shift();
-
-			func.apply(el, args);
-
-			return this.el ? this : newInstance(el);	
-		};
-	}
-
-	function newInstance(el){
-		var instance = Object.create(methods);
-		instance.el = el;
-		return instance;
-	}
-
-
-
-	var methods = {
-		lement: function(tag, options){
-			var el = document.createElement(tag);
-
-			if( typeof options === "object" ){
-				options.class && this.addClass(el, options.class);
-				options.text && (el.innerText = options.text);
-				options.html && (el.innerHTML = options.html);
-			}
-
-			return el;
-		},
-		addClass: makeFunction(function(className){
-
-			var split = className.split(" ");
-
-			for( var i = 0; i < split.length; i++ ){
-				if( !split[i] ){ continue; }
-				if( this.classList ){ this.classList.add(split[i]); }
-				else{ this.className = split[i]; }
-			}
-		}),
-
-		removeClass: makeFunction(function(className){
-			if( this.classList ){ this.classList.remove(className); }
-			else{
-				this.className = this.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-			}
-		}),
-
-		hide: makeFunction(function(){
-			if( this.style.display !== "none" ){
-				this.style.display = "none";
-			}
-		}),
-
-		show: makeFunction(function(){
-			if( this.style.display !== "block" ){
-				this.style.display = "block";
-			}
-		})
+		for( var i = 0; i < split.length; i++ ){
+			if( !split[i] ){ continue; }
+			if( this._.classList ){ this._.classList.add(split[i]); }
+			else{ this._.className = split[i]; }
+		}
+		return this;
 	};
 
-	return methods;
+	E.prototype.removeClass = function removeClass(className){
+		if( this._.classList ){ this._.classList.remove(className); }
+		else{
+			this._.className = this._.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+		}
+		return this;
+	};
+
+	E.prototype.hide = function hide(){
+		if( this._.style.display !== "none" ){
+			this._.style.display = "none";
+		}
+		return this;
+	};
+
+	E.prototype.show = function show(){
+		if( this._.style.display !== "block" ){
+			this._.style.display = "block";
+		}
+		return this;
+	};
+
+	E.prototype.on = function on(eventName, eventCallback){
+		this._.addEventListener(eventName, eventCallback, false);
+		return this;
+	};
+
+	E.prototype.off = function off(eventName, eventCallback){
+		this._.removeEventListener(eventName, eventCallback);
+		return this;
+	};
+
+	E.prototype.append = function append(){
+
+		var args = [].slice.apply(arguments);
+		for( var i = 0; i < args.length; i++ ){
+			this._.appendChild( args[i] instanceof E ? args[i]._ : args[i] );
+		}
+
+		return this;
+	};
+
+	E.prototype.text = function text(textContent){
+
+		if( this._text ){
+			this._text.textContent = textContent;
+		}else{
+			this._.textContent = textContent;	
+		}
+
+		return this;
+	};
+
+
+	return function (el, opts){
+
+		var instance = new E();
+
+		// el is a string
+		if( typeof el === "string" ){
+
+			// Create element
+			instance._ = document.createElement(el);
+
+			if( typeof opts === "object" ){
+
+				var _opts = Object.create(opts);
+
+
+				// Text container element
+				if( typeof _opts._text === "string" ){
+
+					instance._text = document.createElement(_opts._text);
+					instance._.appendChild( instance._text );
+				}
+
+				// Inner text
+				if( typeof _opts.text === "string" ){
+					instance.text(_opts.text);
+				}
+
+				// Inner HTML
+				if( typeof _opts.html === "string" ){
+					instance._.innerHTML = _opts.html;
+				}
+
+				// Set everything else as an attribute
+				for( var at in _opts ){
+					if( _opts[at] ){
+						instance._.setAttribute(at, _opts[at]);
+					}
+				}
+			}
+		}else{
+			instance._ = el;
+		}
+
+		return instance;
+	};
 })();
 },{}],3:[function(require,module,exports){
 /*jshint unused: false */
@@ -268,117 +316,68 @@ module.exports = (function(){
 		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+(~~time)%60).slice(-2) + APM;
 	}
 
-	function Week(){
 
-		this.start = 9*60;
-		this.end = (12+10)*60;
+	function createTracker(){
 
+		this.tracker = E("hr", { class: "tracker" });
+		this.tracker.hide();
 
-		this.$ = E.lement("div", { class: "week columns" });
+		this.trackerLabel = E("div", { class: "trackerLabel" });
+		this.trackerLabel.hide();
 
-		this.createGrid();
-
-		this.createTracker();
-
-		this.days = [];
-
-		var self = this;
-		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"].forEach(function(name){
-			self.addDay(name + "day");
-		});
-
-
-		window.addEventListener("resize", function(e){
-			
-			self.days.forEach(function(day){
-				day.resizeText();
-			});
-		});
-	}
-
-	Week.prototype.createTracker = function(){
-
-		this.tracker = E.lement("hr", { class: "tracker" });
-		this.tracker.style.display = "none";
-
-		this.trackerLabel = E.lement("div", { class: "trackerLabel" });
-		this.trackerLabel.style.display = "none";
-
-		this.$.appendChild(this.tracker);
-		this.$.appendChild(this.trackerLabel);
+		this.$.append(this.tracker, this.trackerLabel);
 
 		var self = this;
 		function trackMouse(e){
 			// console.dir(self.grids);
 
+			if( self.grids._.offsetTop > (e.pageY - self.$._.offsetTop) ){ return; }
 
-			if( self.grids.offsetTop > (e.pageY - self.$.offsetTop) ){ return; }
+			// Set position
+			self.tracker._.style.top = self.trackerLabel._.style.top = (e.pageY - self.$._.offsetTop) + "px";
+			self.trackerLabel._.style.left = (e.pageX - self.$._.offsetLeft) + "px";
 
+			// Calculate offeset in percent
+			var percent = (e.pageY - self.$._.offsetTop - self.grids._.offsetTop) / self.grids._.offsetHeight;
 
-			self.trackerLabel.style.top = (e.pageY - self.$.offsetTop) + "px";
-			self.trackerLabel.style.left = (e.pageX - self.$.offsetLeft) + "px";
-
-
-			var percent = (e.pageY - self.$.offsetTop - self.grids.offsetTop) / self.grids.offsetHeight;
-			self.trackerLabel.textContent = formatTime( ((self.end - self.start) * percent ) + self.start );
-
-
-			self.tracker.style.top = (e.pageY - self.$.offsetTop) + "px";
+			// Render time
+			self.trackerLabel.text( formatTime( ((self.end - self.start) * percent ) + self.start ) );
 		}
 
-		this.$.addEventListener("mouseenter", function(e){
+		this.$.on("mouseenter", function(e){
 
-			self.tracker.style.display = "block";
-			self.trackerLabel.style.display = "block";
+			self.tracker.show();
+			self.trackerLabel.show();
 
-			self.$.addEventListener("mousemove", trackMouse, false);
-			self.$.addEventListener("mouseleave", function leaveMouse(){
-				self.$.removeEventListener("mouseleave", leaveMouse);
-				self.$.removeEventListener("mousemove", trackMouse);
-				self.tracker.style.display = "none";
-				self.trackerLabel.style.display = "none";
-			}, false);
-		}, false);
-	};
+			self.$
+				.on("mousemove", trackMouse)
+				.on("mouseleave", function leaveMouse(){
 
-	Week.prototype.createGrid = function(){
+					self.$
+						.off("mouseleave", leaveMouse)
+						.off("mousemove", trackMouse);
 
-		this.grids = E.lement("div", { class: "grid" });
-		this.$.appendChild(this.grids);
+					self.tracker.hide();
+					self.trackerLabel.hide();
+				});
+		});
+	}
+
+	function createGrid(){
+
+		this.grids = E("div", { class: "grid" });
+		this.$.append(this.grids);
 
 		for( var i = this.start + 60; i < this.end; i+=60 ){
 			var hr = document.createElement("hr");
 
 			hr.style.top = (((i) - this.start) / (this.end - this.start)*100) + "%";
 
-			this.grids.appendChild( hr );
+			this.grids.append( hr );
 		}
-	};
+	}
 
-
-	Week.prototype.createTimes = function(){
-
-		this.$sidebar = E.lement("div", { class: "column sidebar" });
-
-		this.$sidebar.appendChild( E.lement("div", { class: "title" }) );
-
-		this.$times = E.lement("div", { class: "times" });
-
-		for( var i = this.start; i <= this.end; i+=30 ){
-
-			var time = E.lement("div", {
-				text: formatTime(i),
-				class: "time" + ((i % 60) ? " half" : "")
-			});
-
-			time.style.top = (((i) - this.start) / (this.end - this.start)*100) + "%";
-			this.$times.appendChild( time );
-		}
-
-		this.$sidebar.appendChild(this.$times);
-	};
-
-	Week.prototype.addDay = function(day){
+	function addDay(day){
 
 		var createDay = new Day(this, day);
 
@@ -386,11 +385,49 @@ module.exports = (function(){
 		this.days.push( createDay );
 
 		// Append to DOM
-		this.$.appendChild(createDay.$);
-	};
+		this.$.append(createDay.$);
+	}
+
+
+
+	function Week(){
+
+		this.start = 9*60;
+		this.end = (12+10)*60;
+
+
+		this.$ = E("div", { class: "week columns" });
+
+		createGrid.apply(this);
+
+		createTracker.apply(this);
+
+		this.days = [];
+
+		var self = this;
+
+		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"].forEach(function(name){
+			addDay.apply(self, [name + "day"]);
+		});
+
+
+		window.addEventListener("resize", function(e){
+			self.days.forEach(function(day){
+				day.resizeText();
+			});
+		});
+	}
 
 	Week.prototype.appendTo = function(dom){
-		dom.appendChild(this.$);
+		dom.appendChild(this.$._);
+
+		return this;
+	};
+
+	Week.prototype.remove = function(){
+		this.$.parentNode.removeChild(this.$);
+
+		return this;
 	};
 
 	Week.prototype.addEvent = function(evnt){
@@ -398,14 +435,34 @@ module.exports = (function(){
 		if( !evnt.day ){ return; }
 
 		if( evnt.day instanceof Array ){
-			var self = this;
-			evnt.day.forEach(function(day){
-				self.days[day].addEvent(evnt);
-			});
+			
+			for( var i = 0; i<evnt.day.length; i++){
+
+				// Add event per day
+				this.days[ evnt.day[i] ].addEvent(evnt);
+			}
 		}else{
-			this.days[evnt.day].addEvent(evnt);			
+			this.days[evnt.day].addEvent(evnt);
 		}
+
+		return this;
 	};
+
+	Week.prototype.removeEvent = function(evnt){
+		if( evnt.day instanceof Array ){
+
+			for( var i = 0; i<evnt.day.length; i++){
+
+				// Add event per day
+				this.days[ evnt.day[i] ].removeEvent(evnt);
+			}
+		}else{
+			this.days[evnt.day].removeEvent(evnt);
+		}
+
+		return this;
+	};
+
 
 	return Week;
 })();
