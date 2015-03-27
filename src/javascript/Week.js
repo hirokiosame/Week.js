@@ -140,6 +140,10 @@ module.exports = (function(){
 		dom.appendChild(this.$);
 	};
 
+	Week.prototype.remove = function(){
+		this.$.parentNode.removeChild(this.$);
+	};
+
 	Week.prototype.addEvent = function(evnt){
 
 		if( !evnt.day ){ return; }
@@ -153,6 +157,7 @@ module.exports = (function(){
 			this.days[evnt.day].addEvent(evnt);			
 		}
 	};
+
 
 	return Week;
 })();
