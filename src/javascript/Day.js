@@ -117,7 +117,7 @@ module.exports = (function(){
 
 		this.events.push(_evnt);
 
-		this.renderTO = setTimeout(this.render.bind(this), 100);
+		this.renderTO = setTimeout(this.render.bind(this), 50);
 	};
 
 	Day.prototype.removeEvent = function(evnt){
@@ -136,7 +136,7 @@ module.exports = (function(){
 			}
 		}
 
-		this.renderTO = setTimeout(this.render.bind(this), 100);
+		this.renderTO = setTimeout(this.render.bind(this), 50);
 	};
 
 	Day.prototype.renderEvent = function(evnt){
