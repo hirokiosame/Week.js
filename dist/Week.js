@@ -18,9 +18,8 @@ module.exports = (function(){
 
 		var i = 0;
 
-		// if( typeof evnt.localColumns !== "number" ){
-			evnt.localColumns = 1;
-		// }
+		// Declare as at least 1 column
+		evnt.localColumns = 1;
 
 		// Find a column
 		while ( 1 ) {
@@ -33,9 +32,9 @@ module.exports = (function(){
 			if (columns[i].lastEventEnds <= evnt.start) {
 				return i;
 			}
-			console.log("\tCollision", evnt.name, "with", columns[i].events[columns[i].events.length-1].name);
-			console.log("\t\t", evnt.name, "new local:", evnt.localColumns+1);
-			console.log("\t\t", columns[i].events[columns[i].events.length-1].localColumns);
+			// console.log("\tCollision", evnt.name, "with", columns[i].events[columns[i].events.length-1].name);
+			// console.log("\t\t", evnt.name, "new local:", evnt.localColumns+1);
+			// console.log("\t\t", columns[i].events[columns[i].events.length-1].localColumns);
 
 
 			// If it collides, increment number of neighbors
@@ -111,20 +110,30 @@ module.exports = (function(){
 		var _evnt = Object.create(evnt);
 		_evnt.$ = E("div", { class: "event" });
 
-		var $time = E("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
-		var $name = E("div", { class: "name", text: evnt.name });
+		_evnt.$time = E("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
+		_evnt.$name = E("div", { class: "name", text: evnt.name });
 
-		_evnt.$.append( $time, $name );
+		_evnt.$.append( _evnt.$time, _evnt.$name );
 
 		this.events.push(_evnt);
 		this.render();
 	};
 
-	Day.prototype.removeEvent = function(){
+	Day.prototype.removeEvent = function(evnt){
 
 		for( var i = 0; i < this.events.length; i++ ){
-			console.log( i, this.events[i] );
+			if( evnt.isPrototypeOf(this.events[i]) ){
+
+				var removed = this.events.splice(i, 1);
+
+				// Remove DOM
+				removed[0].$.remove();
+
+				break;
+			}
 		}
+
+		this.render();
 	};
 
 	Day.prototype.renderEvent = function(evnt){
@@ -251,6 +260,12 @@ module.exports = (function(){
 		return this;
 	};
 
+	E.prototype.remove = function(){
+		if( !this._.parentNode ){ return; }
+		this._.parentNode.removeChild(this._);
+
+		return this;
+	};
 
 	return function (el, opts){
 
@@ -425,7 +440,7 @@ module.exports = (function(){
 	};
 
 	Week.prototype.remove = function(){
-		this.$.parentNode.removeChild(this.$);
+		this.$.remove();
 
 		return this;
 	};

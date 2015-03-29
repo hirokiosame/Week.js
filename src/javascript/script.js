@@ -13,6 +13,13 @@
 	week3.appendTo(document.getElementById("demo3"));
 
 
+	var evnt1 = {
+		name: "CS 108 A1",
+		day: [2, 4],
+		start: 9.5*60,
+		end: 11*60
+	};
+	week3.addEvent(evnt1);
 
 	week3.addEvent({
 		name: "CS 108 A1",
@@ -20,13 +27,9 @@
 		start: 9.5*60,
 		end: 11*60
 	});
+	week3.removeEvent(evnt1);
+/*
 
-	week3.addEvent({
-		name: "CS 108 A1",
-		day: [2, 4],
-		start: 9.5*60,
-		end: 11*60
-	});
 
 	week3.addEvent({
 		name: "CS 108 A1",
@@ -99,6 +102,6 @@
 		day: 2,
 		start: (5+12)*60,
 		end: (6+12)*60
-	});
+	});*/
 
 })();

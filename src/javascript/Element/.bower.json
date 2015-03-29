@@ -1,11 +1,11 @@
 {
   "name": "Element",
   "homepage": "https://github.com/hirokiosame/Element",
-  "_release": "837e302c30",
+  "_release": "a998692270",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "837e302c303001b4aef3039471094250ec568243"
+    "commit": "a998692270a5df0de6f1724b6a1c44445cb347cb"
   },
   "_source": "git://github.com/hirokiosame/Element.git",
   "_target": "*",

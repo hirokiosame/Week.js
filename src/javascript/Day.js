@@ -109,20 +109,30 @@ module.exports = (function(){
 		var _evnt = Object.create(evnt);
 		_evnt.$ = E("div", { class: "event" });
 
-		var $time = E("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
-		var $name = E("div", { class: "name", text: evnt.name });
+		_evnt.$time = E("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
+		_evnt.$name = E("div", { class: "name", text: evnt.name });
 
-		_evnt.$.append( $time, $name );
+		_evnt.$.append( _evnt.$time, _evnt.$name );
 
 		this.events.push(_evnt);
 		this.render();
 	};
 
-	Day.prototype.removeEvent = function(){
+	Day.prototype.removeEvent = function(evnt){
 
 		for( var i = 0; i < this.events.length; i++ ){
-			console.log( i, this.events[i] );
+			if( evnt.isPrototypeOf(this.events[i]) ){
+
+				var removed = this.events.splice(i, 1);
+
+				// Remove DOM
+				removed[0].$.remove();
+
+				break;
+			}
 		}
+
+		this.render();
 	};
 
 	Day.prototype.renderEvent = function(evnt){
