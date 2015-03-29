@@ -104,6 +104,7 @@ module.exports = (function(){
 
 	Day.prototype.addEvent = function(evnt){
 
+		clearTimeout(this.renderTO);
 		console.log("\n\nEvent added", evnt.name);
 
 		var _evnt = Object.create(evnt);
@@ -115,11 +116,14 @@ module.exports = (function(){
 		_evnt.$.append( _evnt.$time, _evnt.$name );
 
 		this.events.push(_evnt);
-		this.render();
+
+		this.renderTO = setTimeout(this.render.bind(this), 500);
 	};
 
 	Day.prototype.removeEvent = function(evnt){
 
+		clearTimeout(this.renderTO);
+		
 		for( var i = 0; i < this.events.length; i++ ){
 			if( evnt.isPrototypeOf(this.events[i]) ){
 
@@ -132,7 +136,7 @@ module.exports = (function(){
 			}
 		}
 
-		this.render();
+		this.renderTO = setTimeout(this.render.bind(this), 500);
 	};
 
 	Day.prototype.renderEvent = function(evnt){
