@@ -117,13 +117,13 @@ module.exports = (function(){
 
 		this.events.push(_evnt);
 
-		this.renderTO = setTimeout(this.render.bind(this), 500);
+		this.renderTO = setTimeout(this.render.bind(this), 100);
 	};
 
 	Day.prototype.removeEvent = function(evnt){
 
 		clearTimeout(this.renderTO);
-		
+
 		for( var i = 0; i < this.events.length; i++ ){
 			if( evnt.isPrototypeOf(this.events[i]) ){
 
@@ -136,7 +136,7 @@ module.exports = (function(){
 			}
 		}
 
-		this.renderTO = setTimeout(this.render.bind(this), 500);
+		this.renderTO = setTimeout(this.render.bind(this), 100);
 	};
 
 	Day.prototype.renderEvent = function(evnt){
