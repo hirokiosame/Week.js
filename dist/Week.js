@@ -237,8 +237,8 @@ module.exports = (function(){
 		var _evnt = Object.create(evnt);
 		_evnt.$ = E("div", { class: "event" });
 
-		_evnt.$time = E("div", { class: "time", text: evnt.name, a: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
-		_evnt.$name = E("div", { class: "name", text: evnt.name });
+		_evnt.$time = E("div", { class: "time", text: evnt.name });
+		_evnt.$name = E("div", { class: "name", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
 
 		if( typeof _evnt.color === "string" ){
 			_evnt.$._.style.backgroundColor = _evnt.color;
