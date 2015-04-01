@@ -13,7 +13,7 @@ module.exports = (function(){
 		return ((hr = hr%12) ? hr : 12) + ":" + ("0"+(~~time)%60).slice(-2) + APM;
 	}
 
-
+/*
 	function findColumn(evnt, columns){
 
 		var i = 0;
@@ -32,9 +32,9 @@ module.exports = (function(){
 			if (columns[i].lastEventEnds <= evnt.start) {
 				return i;
 			}
-			// console.log("\tCollision", evnt.name, "with", columns[i].events[columns[i].events.length-1].name);
-			// console.log("\t\t", evnt.name, "new local:", evnt.localColumns+1);
-			// console.log("\t\t", columns[i].events[columns[i].events.length-1].localColumns);
+			console.log("\tCollision with", columns[i].events[columns[i].events.length-1].name);
+			console.log("\t\t", evnt.name, "new local:", evnt.localColumns+1);
+			console.log("\t\t", columns[i].events[columns[i].events.length-1].localColumns);
 
 
 			// If it collides, increment number of neighbors
@@ -68,7 +68,7 @@ module.exports = (function(){
 			// Find collumn
 			var idx = evnt.inColumn = findColumn(evnt, columns);
 
-			console.log("\tAllocated", evnt.inColumn, evnt.localColumns);
+			// console.log("\tAllocated", evnt.inColumn, evnt.localColumns);
 
 			// Save position in column
 			columns[idx].lastEventEnds = evnt.end;
@@ -76,6 +76,132 @@ module.exports = (function(){
 			columns[idx].events.push(evnt);
 
 		});
+	}*/
+
+
+	// Allocate events
+	function allocateEvents(events) {
+
+		console.log("allocateEvents");
+
+		// Hashmap/Array to allocate events in
+		// Each key is a column and holds the ending time of the last entered event
+		var allocation = {};
+
+		// Allocate each event
+		events.forEach(function(event) {
+
+			var i = 0;
+
+			// Find a column
+			while ( 1 ) {
+
+				// Start with -1
+				// acknowledged that no event ends at t = 0
+				allocation[i] = allocation[i] || -1;
+
+				// If currently placed event in column has already ended, secure a spot
+				if (allocation[i] <= event.start) {
+					allocation[i] = event.end;
+					event.column = i;
+					break;
+				}
+
+				// Check next column
+				i++;
+			}
+		});
+	}
+
+	// Find Neighbors of an event
+	function findNeighbors(events) {
+
+		console.log("findNeighbors");
+
+		events.forEach(function(event1) {
+
+			// Contain neighbors
+			event1.neighbors = [];
+
+			// Contain columns neighbors are in
+			var neighborColumns = [];
+
+			// Find neighbors
+			events.forEach(function(event2) {
+
+				// Ignore if same event
+				if (event1 === event2) { return; }
+
+				if (
+					// E2 in range of E1
+					( event1.start < event2.start && event2.start < event1.end ) ||
+
+					// E1 in range of E2
+					( event2.start < event1.start && event1.start < event2.end )
+				) {
+
+					// Add nieghbor
+					event1.neighbors.push(event2);
+
+					// Keep track of unique columns neighbors are in
+					if (neighborColumns.indexOf(event2.column) === -1) { neighborColumns.push(event2.column); }
+				}
+			});
+
+			// Declare column size -- gets updated later depending on indirect neighbors
+			event1.columnSize = neighborColumns.length;
+		});
+	}
+
+
+	// Adjust column depending on indirect neighbors	
+	function readjustColumns(events) {
+
+
+		console.log("readjustColumns");
+
+		// Copy events
+		var queue = events.slice(), event;
+
+
+		function perEvent(neighbor) {
+			if (neighbor.columnSize > event.columnSize) {
+
+				// Update column size
+				event.columnSize = neighbor.columnSize;
+
+				// Requeue it's neighbors
+				Array.prototype.push.apply(queue, event.neighbors);
+			}
+		}
+
+		// Until the queue is empty
+		while ((event = queue.shift()) !== undefined) {
+
+			// Iterate neighbors to check if they have a bigger column size
+			event.neighbors.forEach(perEvent);
+		}
+	}
+
+
+	// Process Events
+	function processEvents(events) {
+
+		console.log("processEvents");
+
+		// Sort events
+		events.sort(function(a, b) {
+			return (a.start - b.start) || (b.end - a.end);
+		});
+
+		// 1. Allocate events to respective columns
+		allocateEvents(events);
+
+		// 2. Find Neighbors
+		findNeighbors(events);
+
+		// 3. Readjust columns to consider indirect neighbors
+		readjustColumns(events);
 	}
 
 
@@ -105,21 +231,29 @@ module.exports = (function(){
 
 	Day.prototype.addEvent = function(evnt){
 
-		console.log("\n\nEvent added", evnt.name);
+		clearTimeout(this.renderTO);
+		// console.log("\n\nEvent added", evnt.name);
 
 		var _evnt = Object.create(evnt);
 		_evnt.$ = E("div", { class: "event" });
 
-		_evnt.$time = E("div", { class: "time", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
+		_evnt.$time = E("div", { class: "time", text: evnt.name, a: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
 		_evnt.$name = E("div", { class: "name", text: evnt.name });
+
+		if( typeof _evnt.color === "string" ){
+			_evnt.$._.style.backgroundColor = _evnt.color;
+		}
 
 		_evnt.$.append( _evnt.$time, _evnt.$name );
 
 		this.events.push(_evnt);
-		this.render();
+
+		this.renderTO = setTimeout(this.render.bind(this), 50);
 	};
 
 	Day.prototype.removeEvent = function(evnt){
+
+		clearTimeout(this.renderTO);
 
 		for( var i = 0; i < this.events.length; i++ ){
 			if( evnt.isPrototypeOf(this.events[i]) ){
@@ -133,15 +267,17 @@ module.exports = (function(){
 			}
 		}
 
-		this.render();
+		this.renderTO = setTimeout(this.render.bind(this), 50);
 	};
 
 	Day.prototype.renderEvent = function(evnt){
 
-		console.log("   Rendering event:", evnt.name);
-		console.log("   Local Columns:",evnt.localColumns);
-		console.log("   In Column:", evnt.inColumn);
-		console.log("\n");
+		// console.log("   Rendering event:", evnt.name);
+		// console.log("   Local Columns:",evnt.localColumns);
+		// console.log("   In Column:", evnt.inColumn);
+		// console.log("\n");
+
+		evnt.columnSize++;
 
 		var startPercent = (evnt.start - this.week.start) / (this.week.end - this.week.start) * 100,
 			height = (evnt.end - evnt.start ) / (this.week.end - this.week.start) * 100;
@@ -149,8 +285,8 @@ module.exports = (function(){
 		evnt.$._.style.top = startPercent + "%";
 		evnt.$._.style.height = height + "%";
 
-		evnt.$._.style.width = (1/(evnt.localColumns)*100) + "%";
-		evnt.$._.style.left = (evnt.inColumn/evnt.localColumns*100) + "%";
+		evnt.$._.style.width = (100/evnt.columnSize) + "%";
+		evnt.$._.style.left = (evnt.column/evnt.columnSize*100) + "%";
 
 	};
 
@@ -160,7 +296,7 @@ module.exports = (function(){
 
 		console.log("Render invoked");
 
-		allocate2Columns(this.events);
+		processEvents(this.events);
 
 		this.events.forEach(function(evnt){
 
