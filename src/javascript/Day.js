@@ -133,10 +133,13 @@ module.exports = (function(){
 
 				if (
 					// E2 in range of E1
-					( event1.start < event2.start && event2.start < event1.end ) ||
+
+					// E1 starts before E2 / E2 starts after E1
+					// E2 starts before E1 ends / E1 ends after E2 starts
+					( event1.start <= event2.start && event2.start < event1.end ) ||
 
 					// E1 in range of E2
-					( event2.start < event1.start && event1.start < event2.end )
+					( event2.start <= event1.start && event1.start < event2.end )
 				) {
 
 					// Add nieghbor
