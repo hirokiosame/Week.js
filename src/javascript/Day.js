@@ -81,8 +81,6 @@ module.exports = (function(){
 	// Allocate events
 	function allocateEvents(events) {
 
-		console.log("allocateEvents");
-
 		// Hashmap/Array to allocate events in
 		// Each key is a column and holds the ending time of the last entered event
 		var allocation = {};
@@ -114,8 +112,6 @@ module.exports = (function(){
 
 	// Find Neighbors of an event
 	function findNeighbors(events) {
-
-		console.log("findNeighbors");
 
 		events.forEach(function(event1) {
 
@@ -159,9 +155,6 @@ module.exports = (function(){
 	// Adjust column depending on indirect neighbors	
 	function readjustColumns(events) {
 
-
-		console.log("readjustColumns");
-
 		// Copy events
 		var queue = events.slice(), event;
 
@@ -188,8 +181,6 @@ module.exports = (function(){
 
 	// Process Events
 	function processEvents(events) {
-
-		console.log("processEvents");
 
 		// Sort events
 		events.sort(function(a, b) {
@@ -222,19 +213,11 @@ module.exports = (function(){
 		this.$ = E("div", { class: "column day" });
 		this.$.append(this.$title, this.$events);
 
-		// var self = this;
-		// this.$.addEventListener("click", function(){
-
-
-		// 	console.log(self.events);
-		// });
-
 	}
 
 	Day.prototype.addEvent = function(evnt){
 
 		clearTimeout(this.renderTO);
-		// console.log("\n\nEvent added", evnt.name);
 
 		var _evnt = Object.create(evnt);
 		_evnt.$ = E("div", { class: "event" });
@@ -274,11 +257,6 @@ module.exports = (function(){
 
 	Day.prototype.renderEvent = function(evnt){
 
-		// console.log("   Rendering event:", evnt.name);
-		// console.log("   Local Columns:",evnt.localColumns);
-		// console.log("   In Column:", evnt.inColumn);
-		// console.log("\n");
-
 		evnt.columnSize++;
 
 		var startPercent = (evnt.start - this.week.start) / (this.week.end - this.week.start) * 100,
@@ -296,8 +274,6 @@ module.exports = (function(){
 
 		var self = this;
 
-		console.log("Render invoked");
-
 		processEvents(this.events);
 
 		this.events.forEach(function(evnt){
@@ -309,12 +285,6 @@ module.exports = (function(){
 	};
 
 	Day.prototype.resizeText = function(){
-
-		// console.dir(this.$title);
-		// console.log(this.$title.textContent);
-		// console.log(this.$title.offsetHeight);
-		// console.log(this.$title.offsetWidth);
-		// console.log();
 
 		this.$title._.style.fontSize = (this.$title._.offsetHeight/3) + "px";
 
