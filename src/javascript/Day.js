@@ -283,7 +283,7 @@ module.exports = (function(){
 			self.$events.append( evnt.$ );
 		});
 	};
-
+/*
 	Day.prototype.resizeText = function(){
 
 		this.$title._.style.fontSize = (this.$title._.offsetHeight/3) + "px";
@@ -295,6 +295,6 @@ module.exports = (function(){
 			evnt.$name._.style.fontSize = (evnt.$._.clientWidth/19) + "px";
 		});
 	};
-
+*/
 	return Day;
 })();

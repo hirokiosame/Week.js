@@ -97,11 +97,13 @@ module.exports = (function(){
 
 		this.$ = E("div", { class: "week columns" });
 
+
 		createGrid.apply(this);
 
 		createTracker.apply(this);
 
 		this.days = [];
+		this.events = [];
 
 		var self = this;
 
@@ -109,12 +111,12 @@ module.exports = (function(){
 			addDay.apply(self, [name + "day"]);
 		});
 
-
+/*
 		window.addEventListener("resize", function(e){
 			self.days.forEach(function(day){
 				day.resizeText();
 			});
-		});
+		});*/
 	}
 
 	Week.prototype.appendTo = function(dom){
@@ -144,6 +146,8 @@ module.exports = (function(){
 			this.days[evnt.day].addEvent(evnt);
 		}
 
+		this.events.push(evnt);
+
 		return this;
 	};
 
@@ -157,6 +161,11 @@ module.exports = (function(){
 			}
 		}else{
 			this.days[evnt.day].removeEvent(evnt);
+		}
+
+		var idx = this.events.indexOf(evnt);
+		if( idx !== -1 ){
+			this.events.splice(idx, 1);
 		}
 
 		return this;
