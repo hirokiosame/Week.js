@@ -17,37 +17,8 @@
     }), a.addEvent({
         name: "Test 2",
         days: [ 4 ],
-        startTime: 660,
-        endTime: 700,
-        color: b()
-    }), a.addEvent({
-        name: "Test 2",
-        days: [ 4 ],
         startTime: 570,
         endTime: 660,
-        color: b()
-    }), a.addEvent({
-        name: "Test 3",
-        days: [ 4 ],
-        startTime: 594,
-        endTime: 714,
-        color: b()
-    }), a.addEvent({
-        days: [ 4 ],
-        startTime: 570,
-        endTime: 660,
-        color: b()
-    }), a.addEvent({
-        name: "Test 5",
-        days: [ 4 ],
-        startTime: 660,
-        endTime: 700,
-        color: b()
-    }), a.addEvent({
-        name: "Test 6",
-        days: [ 4 ],
-        startTime: 660,
-        endTime: 700,
         color: b()
     }), a.addEvent({
         semester: "Fall 2015",
@@ -62,6 +33,7 @@
         sectionType: {
             sectionTypeName: "LEC"
         },
+        name: "CAS CS 111 A1",
         day: [ 3 ],
         color: "hsl(106.96337272204937, 45%, 55%)",
         added: 0

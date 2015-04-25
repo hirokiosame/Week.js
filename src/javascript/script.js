@@ -47,17 +47,17 @@
 	week3.addEvent({
 		name: "Test 1",
 		days: [4],
-		startTime: 660,
-		endTime: 700,
+		startTime: 11*60,
+		endTime: 11*60 + 40,
 		color: generateColor()
 	});
-	week3.addEvent({
-		name: "Test 2",
-		days: [4],
-		startTime: 660,
-		endTime: 700,
-		color: generateColor()
-	});
+	// week3.addEvent({
+	// 	name: "Test 2",
+	// 	days: [4],
+	// 	start: 660,
+	// 	end: 700,
+	// 	color: generateColor()
+	// });
 
 	week3.addEvent({
 		name: "Test 2",
@@ -67,37 +67,37 @@
 		color: generateColor()
 
 	});
-
+/*
 	week3.addEvent({
 		name: "Test 3",
-		days: [4],
-		startTime: 9.9*60,
-		endTime: 11.9*60,
+		day: [4],
+		start: 9.9*60,
+		end: 11.9*60,
 		color: generateColor()
 	});
 
 	week3.addEvent({
 		// name: "Test 4",
-		days: [4],
-		startTime: 9.5*60,
-		endTime: 11*60,
+		day: [4],
+		start: 9.5*60,
+		end: 11*60,
 		color: generateColor()
 	});
 	week3.addEvent({
 		name: "Test 5",
-		days: [4],
-		startTime: 660,
-		endTime: 700,
+		day: [4],
+		start: 660,
+		end: 700,
 		color: generateColor()
 	});
 	week3.addEvent({
 		name: "Test 6",
-		days: [4],
-		startTime: 660,
-		endTime: 700,
+		day: [4],
+		start: 660,
+		end: 700,
 		color: generateColor()
 	});
-
+*/
 
 
 
@@ -114,7 +114,7 @@
 		"sectionType":{
 			"sectionTypeName":"LEC"
 		},
-		// "name":"CAS CS 111 A1",
+		"name":"CAS CS 111 A1",
 		"day":[3],
 		"color":"hsl(106.96337272204937, 45%, 55%)",
 		"added":0

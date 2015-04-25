@@ -260,7 +260,7 @@ module.exports = (function(){
 		evnt.columnSize++;
 
 		var startPercent = (evnt.startTime - this.week.start) / (this.week.end - this.week.start) * 100,
-			height = (evnt.end - evnt.startTime ) / (this.week.end - this.week.start) * 100;
+			height = (evnt.endTime - evnt.startTime ) / (this.week.end - this.week.start) * 100;
 
 		evnt.$._.style.top = startPercent + "%";
 		evnt.$._.style.height = height + "%";
