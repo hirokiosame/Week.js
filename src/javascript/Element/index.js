@@ -36,20 +36,42 @@ module.exports = (function(){
 		return this;
 	};
 
-	E.prototype.on = function on(eventName, eventCallback){
-		this._.addEventListener(eventName, eventCallback, false);
+	E.prototype.on = function on(eventNames, eventCallback, useCapture){
+
+		useCapture = !!useCapture;
+		eventNames = eventNames.split(" ");
+
+		for( var i = 0, len = eventNames.length; i < len; i++ ){
+			this._.addEventListener(eventNames[i], eventCallback, useCapture);
+		}
+
 		return this;
 	};
 
-	E.prototype.off = function off(eventName, eventCallback){
-		this._.removeEventListener(eventName, eventCallback);
+	E.prototype.off = function off(eventNames, eventCallback){
+
+		eventNames = eventNames.split(" ");
+
+		for( var i = 0, len = eventNames.length; i < len; i++ ){
+			this._.removeEventListener(eventNames[i], eventCallback);
+		}
+
 		return this;
 	};
 
-	E.prototype.append = function append(){
+	E.prototype.one = function one(eventName, eventCallback){
+		var self = this;
+		return this.on(eventName, function cb(){
+			self.off(eventName, cb);
+			eventCallback.apply(this, [].slice.apply(arguments));
+		});
+	};
 
-		var args = [].slice.apply(arguments);
-		for( var i = 0; i < args.length; i++ ){
+	E.prototype.append = function append(arr){
+
+		var args = arr instanceof Array ? arr : arguments;
+
+		for( var i = 0, len = args.length; i < len; i++ ){
 			this._.appendChild( args[i] instanceof E ? args[i]._ : args[i] );
 		}
 
@@ -63,6 +85,17 @@ module.exports = (function(){
 		}else{
 			this._.textContent = textContent;	
 		}
+
+		return this;
+	};
+
+	E.prototype.attr = function(name, value){
+
+		if( typeof name !== "string" ){ throw new Error("An attribute name is required"); }
+
+		if( typeof value !== "string" ){ return this._.getAttribute(name); }
+
+		this._.setAttribute(name, value);
 
 		return this;
 	};
@@ -104,6 +137,11 @@ module.exports = (function(){
 				// Inner HTML
 				if( typeof _opts.html === "string" ){
 					instance._.innerHTML = _opts.html;
+				}
+
+				// Add Class
+				if( typeof _opts.class === "string" ){
+					instance.addClass(_opts.class);
 				}
 
 				// Set everything else as an attribute

@@ -98,8 +98,8 @@ module.exports = (function(){
 				allocation[i] = allocation[i] || -1;
 
 				// If currently placed event in column has already ended, secure a spot
-				if (allocation[i] <= event.start) {
-					allocation[i] = event.end;
+				if (allocation[i] <= event.startTime) {
+					allocation[i] = event.endTime;
 					event.column = i;
 					break;
 				}
@@ -132,10 +132,10 @@ module.exports = (function(){
 
 					// E1 starts before E2 / E2 starts after E1
 					// E2 starts before E1 ends / E1 ends after E2 starts
-					( event1.start <= event2.start && event2.start < event1.end ) ||
+					( event1.startTime <= event2.startTime && event2.startTime < event1.endTime ) ||
 
 					// E1 in range of E2
-					( event2.start <= event1.start && event1.start < event2.end )
+					( event2.startTime <= event1.startTime && event1.startTime < event2.endTime )
 				) {
 
 					// Add nieghbor
@@ -184,7 +184,7 @@ module.exports = (function(){
 
 		// Sort events
 		events.sort(function(a, b) {
-			return (a.start - b.start) || (b.end - a.end);
+			return (a.startTime - b.startTime) || (b.endTime - a.endTime);
 		});
 
 		// 1. Allocate events to respective columns
@@ -223,7 +223,7 @@ module.exports = (function(){
 		_evnt.$ = E("div", { class: "event" });
 
 		_evnt.$time = E("div", { class: "time", text: evnt.name });
-		_evnt.$name = E("div", { class: "name", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
+		_evnt.$name = E("div", { class: "name", text: formatTime(evnt.startTime) + " ~ " + formatTime(evnt.endTime) });
 
 		if( typeof _evnt.color === "string" ){
 			_evnt.$._.style.backgroundColor = _evnt.color;
@@ -259,8 +259,8 @@ module.exports = (function(){
 
 		evnt.columnSize++;
 
-		var startPercent = (evnt.start - this.week.start) / (this.week.end - this.week.start) * 100,
-			height = (evnt.end - evnt.start ) / (this.week.end - this.week.start) * 100;
+		var startPercent = (evnt.startTime - this.week.start) / (this.week.end - this.week.start) * 100,
+			height = (evnt.end - evnt.startTime ) / (this.week.end - this.week.start) * 100;
 
 		evnt.$._.style.top = startPercent + "%";
 		evnt.$._.style.height = height + "%";

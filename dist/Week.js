@@ -82,8 +82,6 @@ module.exports = (function(){
 	// Allocate events
 	function allocateEvents(events) {
 
-		console.log("allocateEvents");
-
 		// Hashmap/Array to allocate events in
 		// Each key is a column and holds the ending time of the last entered event
 		var allocation = {};
@@ -101,8 +99,8 @@ module.exports = (function(){
 				allocation[i] = allocation[i] || -1;
 
 				// If currently placed event in column has already ended, secure a spot
-				if (allocation[i] <= event.start) {
-					allocation[i] = event.end;
+				if (allocation[i] <= event.startTime) {
+					allocation[i] = event.endTime;
 					event.column = i;
 					break;
 				}
@@ -115,8 +113,6 @@ module.exports = (function(){
 
 	// Find Neighbors of an event
 	function findNeighbors(events) {
-
-		console.log("findNeighbors");
 
 		events.forEach(function(event1) {
 
@@ -137,10 +133,10 @@ module.exports = (function(){
 
 					// E1 starts before E2 / E2 starts after E1
 					// E2 starts before E1 ends / E1 ends after E2 starts
-					( event1.start <= event2.start && event2.start < event1.end ) ||
+					( event1.startTime <= event2.startTime && event2.startTime < event1.endTime ) ||
 
 					// E1 in range of E2
-					( event2.start <= event1.start && event1.start < event2.end )
+					( event2.startTime <= event1.startTime && event1.startTime < event2.endTime )
 				) {
 
 					// Add nieghbor
@@ -159,9 +155,6 @@ module.exports = (function(){
 
 	// Adjust column depending on indirect neighbors	
 	function readjustColumns(events) {
-
-
-		console.log("readjustColumns");
 
 		// Copy events
 		var queue = events.slice(), event;
@@ -190,11 +183,9 @@ module.exports = (function(){
 	// Process Events
 	function processEvents(events) {
 
-		console.log("processEvents");
-
 		// Sort events
 		events.sort(function(a, b) {
-			return (a.start - b.start) || (b.end - a.end);
+			return (a.startTime - b.startTime) || (b.endTime - a.endTime);
 		});
 
 		// 1. Allocate events to respective columns
@@ -223,25 +214,17 @@ module.exports = (function(){
 		this.$ = E("div", { class: "column day" });
 		this.$.append(this.$title, this.$events);
 
-		// var self = this;
-		// this.$.addEventListener("click", function(){
-
-
-		// 	console.log(self.events);
-		// });
-
 	}
 
 	Day.prototype.addEvent = function(evnt){
 
 		clearTimeout(this.renderTO);
-		// console.log("\n\nEvent added", evnt.name);
 
 		var _evnt = Object.create(evnt);
 		_evnt.$ = E("div", { class: "event" });
 
 		_evnt.$time = E("div", { class: "time", text: evnt.name });
-		_evnt.$name = E("div", { class: "name", text: formatTime(evnt.start) + " ~ " + formatTime(evnt.end) });
+		_evnt.$name = E("div", { class: "name", text: formatTime(evnt.startTime) + " ~ " + formatTime(evnt.endTime) });
 
 		if( typeof _evnt.color === "string" ){
 			_evnt.$._.style.backgroundColor = _evnt.color;
@@ -275,15 +258,10 @@ module.exports = (function(){
 
 	Day.prototype.renderEvent = function(evnt){
 
-		// console.log("   Rendering event:", evnt.name);
-		// console.log("   Local Columns:",evnt.localColumns);
-		// console.log("   In Column:", evnt.inColumn);
-		// console.log("\n");
-
 		evnt.columnSize++;
 
-		var startPercent = (evnt.start - this.week.start) / (this.week.end - this.week.start) * 100,
-			height = (evnt.end - evnt.start ) / (this.week.end - this.week.start) * 100;
+		var startPercent = (evnt.startTime - this.week.start) / (this.week.end - this.week.start) * 100,
+			height = (evnt.end - evnt.startTime ) / (this.week.end - this.week.start) * 100;
 
 		evnt.$._.style.top = startPercent + "%";
 		evnt.$._.style.height = height + "%";
@@ -297,8 +275,6 @@ module.exports = (function(){
 
 		var self = this;
 
-		console.log("Render invoked");
-
 		processEvents(this.events);
 
 		this.events.forEach(function(evnt){
@@ -308,14 +284,8 @@ module.exports = (function(){
 			self.$events.append( evnt.$ );
 		});
 	};
-
+/*
 	Day.prototype.resizeText = function(){
-
-		// console.dir(this.$title);
-		// console.log(this.$title.textContent);
-		// console.log(this.$title.offsetHeight);
-		// console.log(this.$title.offsetWidth);
-		// console.log();
 
 		this.$title._.style.fontSize = (this.$title._.offsetHeight/3) + "px";
 
@@ -326,7 +296,7 @@ module.exports = (function(){
 			evnt.$name._.style.fontSize = (evnt.$._.clientWidth/19) + "px";
 		});
 	};
-
+*/
 	return Day;
 })();
 },{"./Element":2}],2:[function(require,module,exports){
@@ -368,20 +338,42 @@ module.exports = (function(){
 		return this;
 	};
 
-	E.prototype.on = function on(eventName, eventCallback){
-		this._.addEventListener(eventName, eventCallback, false);
+	E.prototype.on = function on(eventNames, eventCallback, useCapture){
+
+		useCapture = !!useCapture;
+		eventNames = eventNames.split(" ");
+
+		for( var i = 0, len = eventNames.length; i < len; i++ ){
+			this._.addEventListener(eventNames[i], eventCallback, useCapture);
+		}
+
 		return this;
 	};
 
-	E.prototype.off = function off(eventName, eventCallback){
-		this._.removeEventListener(eventName, eventCallback);
+	E.prototype.off = function off(eventNames, eventCallback){
+
+		eventNames = eventNames.split(" ");
+
+		for( var i = 0, len = eventNames.length; i < len; i++ ){
+			this._.removeEventListener(eventNames[i], eventCallback);
+		}
+
 		return this;
 	};
 
-	E.prototype.append = function append(){
+	E.prototype.one = function one(eventName, eventCallback){
+		var self = this;
+		return this.on(eventName, function cb(){
+			self.off(eventName, cb);
+			eventCallback.apply(this, [].slice.apply(arguments));
+		});
+	};
 
-		var args = [].slice.apply(arguments);
-		for( var i = 0; i < args.length; i++ ){
+	E.prototype.append = function append(arr){
+
+		var args = arr instanceof Array ? arr : arguments;
+
+		for( var i = 0, len = args.length; i < len; i++ ){
 			this._.appendChild( args[i] instanceof E ? args[i]._ : args[i] );
 		}
 
@@ -395,6 +387,17 @@ module.exports = (function(){
 		}else{
 			this._.textContent = textContent;	
 		}
+
+		return this;
+	};
+
+	E.prototype.attr = function(name, value){
+
+		if( typeof name !== "string" ){ throw new Error("An attribute name is required"); }
+
+		if( typeof value !== "string" ){ return this._.getAttribute(name); }
+
+		this._.setAttribute(name, value);
 
 		return this;
 	};
@@ -436,6 +439,11 @@ module.exports = (function(){
 				// Inner HTML
 				if( typeof _opts.html === "string" ){
 					instance._.innerHTML = _opts.html;
+				}
+
+				// Add Class
+				if( typeof _opts.class === "string" ){
+					instance.addClass(_opts.class);
 				}
 
 				// Set everything else as an attribute
@@ -552,24 +560,27 @@ module.exports = (function(){
 
 		this.$ = E("div", { class: "week columns" });
 
+
 		createGrid.apply(this);
 
 		createTracker.apply(this);
 
 		this.days = [];
+		this.events = [];
 
 		var self = this;
 
-		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"].forEach(function(name){
+		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"]
+		.forEach(function(name){
 			addDay.apply(self, [name + "day"]);
 		});
 
-
+/*
 		window.addEventListener("resize", function(e){
 			self.days.forEach(function(day){
 				day.resizeText();
 			});
-		});
+		});*/
 	}
 
 	Week.prototype.appendTo = function(dom){
@@ -586,32 +597,39 @@ module.exports = (function(){
 
 	Week.prototype.addEvent = function(evnt){
 
-		if( !evnt.day ){ return; }
+		if( !evnt.days ){ return; }
 
-		if( evnt.day instanceof Array ){
+		if( evnt.days instanceof Array ){
 			
-			for( var i = 0; i<evnt.day.length; i++){
+			for( var i = 0; i<evnt.days.length; i++){
 
 				// Add event per day
-				this.days[ evnt.day[i] ].addEvent(evnt);
+				this.days[ evnt.days[i] ].addEvent(evnt);
 			}
 		}else{
-			this.days[evnt.day].addEvent(evnt);
+			this.days[evnt.days].addEvent(evnt);
 		}
+
+		this.events.push(evnt);
 
 		return this;
 	};
 
 	Week.prototype.removeEvent = function(evnt){
-		if( evnt.day instanceof Array ){
+		if( evnt.days instanceof Array ){
 
-			for( var i = 0; i<evnt.day.length; i++){
+			for( var i = 0; i<evnt.days.length; i++){
 
 				// Add event per day
-				this.days[ evnt.day[i] ].removeEvent(evnt);
+				this.days[ evnt.days[i] ].removeEvent(evnt);
 			}
 		}else{
-			this.days[evnt.day].removeEvent(evnt);
+			this.days[evnt.days].removeEvent(evnt);
+		}
+
+		var idx = this.events.indexOf(evnt);
+		if( idx !== -1 ){
+			this.events.splice(idx, 1);
 		}
 
 		return this;

@@ -15,17 +15,17 @@
 
 	// var evnt1 = {
 	// 	name: "CS 108 A1",
-	// 	day: [2, 4],
-	// 	start: 9.5*60,
-	// 	end: 11*60
+	// 	days: [2, 4],
+	// 	startTime: 9.5*60,
+	// 	Timeend: 11*60
 	// };
 	// week3.addEvent(evnt1);
 
 	// week3.addEvent({
 	// 	name: "CS 108 A1",
-	// 	day: [2, 4],
-	// 	start: 9.5*60,
-	// 	end: 11*60
+	// 	days: [2, 4],
+	// 	startTime: 9.5*60,
+	// 	eTimend: 11*60
 	// });
 	// week3.removeEvent(evnt1);
 
@@ -46,55 +46,55 @@
 
 	week3.addEvent({
 		name: "Test 1",
-		day: [4],
-		start: 660,
-		end: 700,
+		days: [4],
+		startTime: 660,
+		endTime: 700,
 		color: generateColor()
 	});
 	week3.addEvent({
 		name: "Test 2",
-		day: [4],
-		start: 660,
-		end: 700,
+		days: [4],
+		startTime: 660,
+		endTime: 700,
 		color: generateColor()
 	});
 
 	week3.addEvent({
 		name: "Test 2",
-		day: [4],
-		start: 9.5*60,
-		end: 11*60,
+		days: [4],
+		startTime: 9.5*60,
+		endTime: 11*60,
 		color: generateColor()
 
 	});
 
 	week3.addEvent({
 		name: "Test 3",
-		day: [4],
-		start: 9.9*60,
-		end: 11.9*60,
+		days: [4],
+		startTime: 9.9*60,
+		endTime: 11.9*60,
 		color: generateColor()
 	});
 
 	week3.addEvent({
-		name: "Test 4",
-		day: [4],
-		start: 9.5*60,
-		end: 11*60,
+		// name: "Test 4",
+		days: [4],
+		startTime: 9.5*60,
+		endTime: 11*60,
 		color: generateColor()
 	});
 	week3.addEvent({
 		name: "Test 5",
-		day: [4],
-		start: 660,
-		end: 700,
+		days: [4],
+		startTime: 660,
+		endTime: 700,
 		color: generateColor()
 	});
 	week3.addEvent({
 		name: "Test 6",
-		day: [4],
-		start: 660,
-		end: 700,
+		days: [4],
+		startTime: 660,
+		endTime: 700,
 		color: generateColor()
 	});
 
@@ -114,7 +114,7 @@
 		"sectionType":{
 			"sectionTypeName":"LEC"
 		},
-		"name":"CAS CS 111 A1",
+		// "name":"CAS CS 111 A1",
 		"day":[3],
 		"color":"hsl(106.96337272204937, 45%, 55%)",
 		"added":0
@@ -143,16 +143,16 @@
 /*
 	week3.addEvent({
 		name: "CS 101 A1",
-		day: [2, 4],
-		start: (12.5)*60,
-		end: (2+12)*60,
+		days: [2, 4],
+		startTime: (12.5)*60,
+		endTime: (2+12)*60,
 		color: generateColor()
 	});
 	week3.addEvent({
 		name: "CS 460 A1",
-		day: [2, 4],
-		start: (3.5+12)*60,
-		end: (5+12)*60,
+		days: [2, 4],
+		startTime: (3.5+12)*60,
+		endTime: (5+12)*60,
 		color: generateColor()
 	});
 
@@ -160,42 +160,42 @@
 
 	week3.addEvent({
 		name: "CS 103 A1",
-		day: [1, 3],
-		start: (6+12)*60,
-		end: (7.5+12)*60,
+		days: [1, 3],
+		startTime: (6+12)*60,
+		endTime: (7.5+12)*60,
 		color: generateColor()
 	});
 
 
 	week3.addEvent({
 		name: "CS 460 A3",
-		day: 3,
-		start: (3+12)*60,
-		end: (4+12)*60,
+		days: 3,
+		startTime: (3+12)*60,
+		endTime: (4+12)*60,
 		color: generateColor()
 	});
 
 	week3.addEvent({
 		name: "CS 101 A5",
-		day: 3,
-		start: (4+12)*60,
-		end: (5+12)*60,
+		days: 3,
+		startTime: (4+12)*60,
+		endTime: (5+12)*60,
 		color: generateColor()
 	});
 	week3.addEvent({
 		name: "CS 108 A3",
-		day: 3,
-		start: (5+12)*60,
-		end: (6+12)*60,
+		days: 3,
+		startTime: (5+12)*60,
+		endTime: (6+12)*60,
 		color: generateColor()
 	});
 
 
 	week3.addEvent({
 		name: "CS 103 A4",
-		day: 2,
-		start: (5+12)*60,
-		end: (6+12)*60,
+		days: 2,
+		startTime: (5+12)*60,
+		endTime: (6+12)*60,
 		color: generateColor()
 	});*/
 

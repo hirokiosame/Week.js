@@ -107,7 +107,8 @@ module.exports = (function(){
 
 		var self = this;
 
-		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"].forEach(function(name){
+		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"]
+		.forEach(function(name){
 			addDay.apply(self, [name + "day"]);
 		});
 
@@ -133,17 +134,17 @@ module.exports = (function(){
 
 	Week.prototype.addEvent = function(evnt){
 
-		if( !evnt.day ){ return; }
+		if( !evnt.days ){ return; }
 
-		if( evnt.day instanceof Array ){
+		if( evnt.days instanceof Array ){
 			
-			for( var i = 0; i<evnt.day.length; i++){
+			for( var i = 0; i<evnt.days.length; i++){
 
 				// Add event per day
-				this.days[ evnt.day[i] ].addEvent(evnt);
+				this.days[ evnt.days[i] ].addEvent(evnt);
 			}
 		}else{
-			this.days[evnt.day].addEvent(evnt);
+			this.days[evnt.days].addEvent(evnt);
 		}
 
 		this.events.push(evnt);
@@ -152,15 +153,15 @@ module.exports = (function(){
 	};
 
 	Week.prototype.removeEvent = function(evnt){
-		if( evnt.day instanceof Array ){
+		if( evnt.days instanceof Array ){
 
-			for( var i = 0; i<evnt.day.length; i++){
+			for( var i = 0; i<evnt.days.length; i++){
 
 				// Add event per day
-				this.days[ evnt.day[i] ].removeEvent(evnt);
+				this.days[ evnt.days[i] ].removeEvent(evnt);
 			}
 		}else{
-			this.days[evnt.day].removeEvent(evnt);
+			this.days[evnt.days].removeEvent(evnt);
 		}
 
 		var idx = this.events.indexOf(evnt);
