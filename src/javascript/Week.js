@@ -28,16 +28,18 @@ module.exports = (function(){
 
 		var self = this;
 		function trackMouse(e){
-			// console.dir(self.grids);
+			var rect = self.$._.getBoundingClientRect(),
+				relativeY = e.pageY - rect.top;
 
-			if( self.grids._.offsetTop > (e.pageY - self.$._.offsetTop) ){ return; }
+			// Ignore if above the grids
+			if( self.grids._.offsetTop > relativeY ){ return; }
 
 			// Set position
-			self.tracker._.style.top = self.trackerLabel._.style.top = (e.pageY - self.$._.offsetTop) + "px";
-			self.trackerLabel._.style.left = (e.pageX - self.$._.offsetLeft) + "px";
+			self.tracker._.style.top = self.trackerLabel._.style.top = relativeY + "px";
+			self.trackerLabel._.style.left = (e.pageX - rect.left) + "px";
 
 			// Calculate offeset in percent
-			var percent = (e.pageY - self.$._.offsetTop - self.grids._.offsetTop) / self.grids._.offsetHeight;
+			var percent = (relativeY - self.grids._.offsetTop) / self.grids._.offsetHeight;
 
 			// Render time
 			self.trackerLabel.text( formatTime( ((self.end - self.start) * percent ) + self.start ) );
