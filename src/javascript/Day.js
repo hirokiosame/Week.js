@@ -215,28 +215,33 @@ module.exports = (function(){
 
 	}
 
-	Day.prototype.addEvent = function(evnt){
+	Day.prototype.addEvent = function addEvent(evnt){
 
 		clearTimeout(this.renderTO);
 
 		var _evnt = Object.create(evnt);
 		_evnt.$ = E("div", { class: "event" });
 
-		_evnt.$time = E("div", { class: "time", text: evnt.name });
-		_evnt.$name = E("div", { class: "name", text: formatTime(evnt.startTime) + " ~ " + formatTime(evnt.endTime) });
+		// Make accessible if request indicated
+		if( evnt.$events instanceof Array ){
+			evnt.$events.push( _evnt.$ );
+		}
+
+		_evnt.$name = E("div", { class: "name", text: evnt.name });
+		_evnt.$time = E("div", { class: "time", text: formatTime(evnt.startTime) + " ~ " + formatTime(evnt.endTime) });
 
 		if( typeof _evnt.color === "string" ){
 			_evnt.$._.style.backgroundColor = _evnt.color;
 		}
 
-		_evnt.$.append( _evnt.$time, _evnt.$name );
+		_evnt.$.append( _evnt.$name, _evnt.$time );
 
 		this.events.push(_evnt);
 
 		this.renderTO = setTimeout(this.render.bind(this), 50);
 	};
 
-	Day.prototype.removeEvent = function(evnt){
+	Day.prototype.removeEvent = function removeEvent(evnt){
 
 		clearTimeout(this.renderTO);
 
