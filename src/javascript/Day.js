@@ -207,7 +207,7 @@ module.exports = (function(){
 		this.events = [];
 
 
-		this.$title = E("div", { class: "title", _text: "div", text: name });
+		this.$title = E("div", { class: "title", textWrap: "div", text: name });
 		this.$events = E("div", { class: "events" });
 
 		this.$ = E("div", { class: "column day" });
@@ -267,12 +267,12 @@ module.exports = (function(){
 		var startPercent = (evnt.startTime - this.week.start) / (this.week.end - this.week.start) * 100,
 			height = (evnt.endTime - evnt.startTime ) / (this.week.end - this.week.start) * 100;
 
-		evnt.$._.style.top = startPercent + "%";
-		evnt.$._.style.height = height + "%";
-
-		evnt.$._.style.width = (100/evnt.columnSize) + "%";
-		evnt.$._.style.left = (evnt.column/evnt.columnSize*100) + "%";
-
+		evnt.$.css({
+			"top": startPercent + "%",
+			"height": height + "%",
+			"width": (100/evnt.columnSize) + "%",
+			"left": (evnt.column/evnt.columnSize*100) + "%",
+		});
 	};
 
 	Day.prototype.render = function(){
