@@ -2,7 +2,7 @@ module.exports = (function(){
 	
 	'use strict';
 	
-	var E = require("./Element");
+	var E = require("Element");
 
 
 	function formatTime(time) {

@@ -136,7 +136,7 @@ module.exports = function(grunt) {
 			},
 			src: {
 				files: ['src/**/*'],
-				tasks: ['development'],
+				tasks: ['develop'],
 				options: {
 					livereload: 35728
 				}
@@ -156,6 +156,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jade');
 
 	grunt.registerTask('default', ['jade', 'sass', 'jshint', 'browserify', 'uglify', 'closure-compiler', 'watch']);
-	grunt.registerTask('development', ['jade', 'sass', 'jshint', 'uglify:script', 'browserify', 'watch']);
+	grunt.registerTask('develop', ['jade', 'sass', 'jshint', 'uglify:script', 'browserify', 'watch']);
 
 };

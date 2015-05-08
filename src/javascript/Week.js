@@ -3,7 +3,7 @@ module.exports = (function(){
 
 	'use strict';
 
-	var E = require("./Element");
+	var E = require("Element");
 
 	var Day = require("./Day");
 
@@ -91,10 +91,10 @@ module.exports = (function(){
 
 
 
-	function Week(){
-
-		this.start = 9*60;
-		this.end = (12+10)*60;
+	function Week(options){
+		options = options || {};
+		this.start = typeof options.start === "number" ? options.start : 9*60;
+		this.end = typeof options.end === "number" ? options.end : (12+10)*60;
 
 
 		this.$ = E("div", { class: "week columns" });
