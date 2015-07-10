@@ -32,14 +32,14 @@ module.exports = (function(){
 				relativeY = e.pageY - rect.top;
 
 			// Ignore if above the grids
-			if( self.grids._.offsetTop > relativeY ){ return; }
+			if( self.$grids._.offsetTop > relativeY ){ return; }
 
 			// Set position
 			self.tracker._.style.top = self.trackerLabel._.style.top = relativeY + "px";
 			self.trackerLabel._.style.left = (e.pageX - rect.left) + "px";
 
 			// Calculate offeset in percent
-			var percent = (relativeY - self.grids._.offsetTop) / self.grids._.offsetHeight;
+			var percent = (relativeY - self.$grids._.offsetTop) / self.$grids._.offsetHeight;
 
 			// Render time
 			self.trackerLabel.text( formatTime( ((self.end - self.start) * percent ) + self.start ) );
@@ -66,28 +66,39 @@ module.exports = (function(){
 
 	function createGrid(){
 
-		this.grids = E("div", { class: "grid" });
-		this.$.append(this.grids);
+		this.$grids = E("div", { class: "grid" });
+		this.$.append(this.$grids);
 
-		for( var i = this.start + 60; i < this.end; i+=60 ){
-			var hr = document.createElement("hr");
+		var percent, $hr, time, $time;
+		for( var i = this.start + 60, end = this.end; i < end; i+=60 ){
 
-			hr.style.top = (((i) - this.start) / (this.end - this.start)*100) + "%";
+			percent = (i - this.start) / (this.end - this.start) * 100;
 
-			this.grids.append( hr );
+			$hr = document.createElement("hr");
+			$hr.style.top = percent + "%";
+
+			// Calculate display time
+			time = ~~(i/60);
+
+			if( time % 2 === 0 ){
+				// if( time === 12 ){ time += " PM"; }
+				if( time > 12 ){ time -= 12; }
+			}else{ time = ""; }
+
+			$time =	E("div", {
+						class: "time" + ( time === 12 ? " pm" : ""),
+						text: time
+					})
+					.css({
+						top: percent-2 + "%"
+					});
+
+			this.$times.append( $time );
+			this.$grids.append( $hr );
 		}
 	}
 
-	function addDay(day){
 
-		var createDay = new Day(this, day);
-
-		// Add to array
-		this.days.push( createDay );
-
-		// Append to DOM
-		this.$.append(createDay.$);
-	}
 
 
 
@@ -97,7 +108,10 @@ module.exports = (function(){
 		this.end = typeof options.end === "number" ? options.end : (12+10)*60;
 
 
-		this.$ = E("div", { class: "week columns" });
+		this.$times = E("div", { class: "times" });
+		var $sideBar = E("div", { class: "column sideBar" }).append( E("div", { class: "title" }), this.$times);
+		this.$ = E("div", { class: "week columns" }).append($sideBar);
+
 
 
 		createGrid.apply(this);
@@ -110,8 +124,17 @@ module.exports = (function(){
 		var self = this;
 
 		["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"]
-		.forEach(function(name){
-			addDay.apply(self, [name + "day"]);
+		.forEach(function addDay(day){
+
+			day += "day";
+
+			var createDay = new Day(self, day);
+
+			// Add to array
+			self.days.push( createDay );
+
+			// Append to DOM
+			self.$.append(createDay.$);
 		});
 
 /*

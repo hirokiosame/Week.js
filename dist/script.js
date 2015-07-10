@@ -1,6 +1,8 @@
 !function() {
     "use strict";
-    var a = new Week();
+    var a = new Week({
+        start: 420
+    });
     a.appendTo(document.getElementById("demo3"));
     var b = function() {
         var a = (1 + Math.sqrt(5)) / 2, b = 10;

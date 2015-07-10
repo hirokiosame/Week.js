@@ -9,7 +9,9 @@
 	// var week2 = new Week();
 	// week2.appendTo(document.getElementById("demo2"));
 
-	var week3 = new Week();
+	var week3 = new Week({
+		start: 7*60
+	});
 	week3.appendTo(document.getElementById("demo3"));
 
 

@@ -88,6 +88,30 @@ $titleHeight: 10%;
 		letter-spacing: 1px;
 	}
 
+	.sideBar{
+
+		flex-basis: 15%;
+		.times{
+			background-color: #eee;
+			position: relative;
+			z-index: 10;
+			display: flex;
+
+			.time{
+				position: absolute;
+				/*font-size: .7em;*/
+				font-size: 11px;
+				right: 4px;
+				font-weight: bold;
+				color: #444;
+
+				&.pm{
+					font-size: 12px;
+				}
+			}
+		}	
+	}
+
 	.grid{
 		height: 100% - $titleHeight;
 		position: absolute;
@@ -104,26 +128,6 @@ $titleHeight: 10%;
 		}	
 	}
 
-	.sideBar{
-		flex-basis: 20%;
-
-		.times{
-			text-align: right;
-			position: relative;
-
-			.time{
-				letter-spacing: 1px;
-				width: 100%;
-				position: absolute;
-				font-size: 11px;
-				color: #333;
-
-				&.half{
-					font-size: 9px;
-				}
-			}
-		}
-	}
 
 	.day{
 		border-left: 1px solid #eee;
