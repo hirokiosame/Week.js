@@ -90,7 +90,7 @@ module.exports = (function(){
 						text: time
 					})
 					.css({
-						top: percent-2 + "%"
+						top: percent-1.5 + "%"
 					});
 
 			this.$times.append( $time );
