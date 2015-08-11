@@ -27,16 +27,28 @@ module.exports = (function(){
 		this.$.append(this.tracker, this.trackerLabel);
 
 		var self = this;
+
+		function hideTracker() {
+			self.tracker.hide();
+			self.trackerLabel.hide();
+		}
+
 		function trackMouse(e){
 			var rect = self.$._.getBoundingClientRect(),
 				relativeY = e.pageY - rect.top;
 
 			// Ignore if above the grids
-			if( self.$grids._.offsetTop > relativeY ){ return; }
+			if( self.$grids._.offsetTop > relativeY ){
+				return hideTracker();
+			}
+
+			// Show tracker
+			self.tracker.show();
+			self.trackerLabel.show();
 
 			// Set position
 			self.tracker._.style.top = self.trackerLabel._.style.top = relativeY + "px";
-			self.trackerLabel._.style.left = (e.pageX - rect.left) + "px";
+			self.trackerLabel.css("left", (e.pageX - rect.left) + "px");
 
 			// Calculate offeset in percent
 			var percent = (relativeY - self.$grids._.offsetTop) / self.$grids._.offsetHeight;
@@ -47,19 +59,11 @@ module.exports = (function(){
 
 		this.$.on("mouseenter", function(e){
 
-			self.tracker.show();
-			self.trackerLabel.show();
-
 			self.$
 				.on("mousemove", trackMouse)
-				.on("mouseleave", function leaveMouse(){
-
-					self.$
-						.off("mouseleave", leaveMouse)
-						.off("mousemove", trackMouse);
-
-					self.tracker.hide();
-					self.trackerLabel.hide();
+				.one("mouseleave", function (){
+					self.$.off("mousemove", trackMouse);
+					hideTracker();
 				});
 		});
 	}
@@ -90,7 +94,7 @@ module.exports = (function(){
 						text: time
 					})
 					.css({
-						top: percent-1.5 + "%"
+						top: percent + "%"
 					});
 
 			this.$times.append( $time );
@@ -163,18 +167,15 @@ module.exports = (function(){
 
 		if( evnt.days instanceof Array ){
 			
-			for( var i = 0; i<evnt.days.length; i++){
-
-				// Add event per day
-				this.days[ evnt.days[i] ].addEvent(evnt);
-			}
+			var self = this;
+			return evnt.days.map(function(d) {
+				self.events.push(evnt);
+				return self.days[ d ].addEvent(evnt);
+			});
 		}else{
-			this.days[evnt.days].addEvent(evnt);
+			this.events.push(evnt);
+			return this.days[evnt.days].addEvent(evnt);
 		}
-
-		this.events.push(evnt);
-
-		return this;
 	};
 
 	Week.prototype.removeEvent = function(evnt){

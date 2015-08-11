@@ -166,7 +166,7 @@ module.exports = (function(){
 				event.columnSize = neighbor.columnSize;
 
 				// Requeue it's neighbors
-				Array.prototype.push.apply(queue, event.neighbors);
+				[].push.apply(queue, event.neighbors);
 			}
 		}
 
@@ -238,7 +238,11 @@ module.exports = (function(){
 
 		this.events.push(_evnt);
 
+		processEvents(this.events);
+
 		this.renderTO = setTimeout(this.render.bind(this), 50);
+
+		return _evnt.columnSize + 1;
 	};
 
 	Day.prototype.removeEvent = function removeEvent(evnt){
@@ -256,6 +260,8 @@ module.exports = (function(){
 				break;
 			}
 		}
+
+		processEvents(this.events);
 
 		this.renderTO = setTimeout(this.render.bind(this), 50);
 	};
@@ -278,8 +284,6 @@ module.exports = (function(){
 	Day.prototype.render = function(){
 
 		var self = this;
-
-		processEvents(this.events);
 
 		this.events.forEach(function(evnt){
 

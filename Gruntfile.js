@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
 		sass: {
 			options: {
-				compass: true,
+				// compass: true,
 				style: "compressed"
 			},
 			code: {
